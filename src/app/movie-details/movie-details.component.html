@@ -1,0 +1,19 @@
+<mat-card *ngIf="movie" class="movie-card">
+    <mat-card-header>
+        <img mat-card-avatar [src]="movie.poster">
+        <mat-card-title>{{ movie.title }}</mat-card-title>
+        <mat-card-subtitle>Year : {{ movie.year }} | Duration: {{ movie.runtime }}</mat-card-subtitle>
+    </mat-card-header>
+    <div class="trailer-container" *ngIf="movieTrailer">
+        <iframe [src]="movieTrailer" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <mat-card-content class="movie-description">
+        <p>{{ movie.description }}</p>
+        <h2>Details</h2>
+        <p><b>Director:</b> {{ movie.director }}</p>
+    </mat-card-content>
+    <mat-card-actions align="end">
+        <button mat-button>LIKE</button>
+        <button mat-button>SHARE</button>
+    </mat-card-actions>
+</mat-card>
