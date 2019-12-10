@@ -2,10 +2,10 @@
 
 <mat-nav-list>
     <mat-list-item *ngFor="let movie of movies">
-        <img matListAvatar [src]="movie.poster"/>
-        <a matLine [routerLink]="['movies', movie.id]">{{ movie.title }}</a>
+        <img matListAvatar [src]="movie.externalData.poster"/>
+        <a matLine [routerLink]="['movies', movie.id]">{{ movie.externalData.title }}</a>
         <p matLine>
-            <span> {{ movie.director }} </span>
+            <span> {{ movie.externalData.director }} </span>
         </p>
     </mat-list-item>
 </mat-nav-list>

@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,6 +25,7 @@ import { MovieDetailsComponent } from './movie-details/movie-details.component';
     MatListModule,
     MatCardModule,
     MatButtonModule,
+    MatExpansionModule,
     RouterModule.forRoot([
       { path: '', component: MovieListComponent },
       { path: 'movies/:movieId', component: MovieDetailsComponent }
