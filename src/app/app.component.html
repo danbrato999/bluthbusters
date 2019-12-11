@@ -1,4 +1,16 @@
-<div class="mat-app-background basic-container">
-    <h2>Welcome to BluthBusters, BlockBuster with 100% more Buster Bluth!!</h2>
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <a mat-button [routerLink]="['/']">
+            <mat-icon aria-hidden="false" aria-label="Example home icon">camera_enhance</mat-icon>
+            <span class="logo-text">BluthBusters</span>
+        </a>
+        <a mat-button [routerLink]="['/']">For Rent</a>
+        <a mat-button [routerLink]="['/']">History</a>
+        <!-- This fills the remaining space of the current row -->
+        <span class="menu-fill-remaining-space"></span>
+        <mat-icon class="menu-logout" aria-hidden="false" aria-label="Example delete icon">input</mat-icon>
+    </mat-toolbar-row>
+</mat-toolbar>
+<div class="basic-container bb-root">
     <router-outlet></router-outlet>
 </div>

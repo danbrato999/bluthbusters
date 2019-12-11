@@ -1,0 +1,10 @@
+<form [formGroup]="rentForm" (ngSubmit)="onSubmit(rentForm.value)">
+    <p>You can rent a movie for the next 20 days!!!</p>
+    <mat-form-field appearence="standard">
+        <mat-label>Borrow until</mat-label>
+        <input matInput [matDatepicker]="picker" [min]="minAllowedDate" [max]="maxAllowedDate" formControlName="borrowedAt" placeholder="Choose a date" disabled required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker disabled="false"></mat-datepicker>
+    </mat-form-field>
+    <button mat-button class="button" type="submit">RENT</button>
+</form>
