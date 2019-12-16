@@ -1,0 +1,11 @@
+<mat-list>
+    <mat-list-item *ngFor="let rental of rentals">
+        <h2 matLine>{{ rental.movie.title }}</h2>
+        <p matLine><b>Rented at: </b>{{ rental.borrowedAt | date:'medium' }}</p>
+        <p matLine *ngIf="rental.returnedAt;else deadline"><b>Returned At: </b>{{ rental.returnedAt | date:'medium' }}</p>
+        <ng-template #deadline>
+            <p matLine class="deadline-text"><b>Deadline: </b>{{ rental.borrowUntil | date }}</p>
+            <button mat-raised-button color="accent">Return movie</button>
+        </ng-template>
+    </mat-list-item>
+</mat-list>

@@ -13,8 +13,15 @@ export class MovieRentalsService {
     return movieLendings
       .filter(lending => userId == lending.userId)
       .map(obj => {
-        const jointObj = { ...obj, ...{movie: movies[obj.movieId]} }
+        const { externalData } = movies[obj.movieId]
+        const jointObj = { ...obj, ...{movie: { title: externalData.title } } }
         return jointObj
-      })
+      }).sort((a, b) => b.borrowedAt.getTime() - a.borrowedAt.getTime())
+  }
+
+  getCurrentRentingDetails(movieId: String, userId: String) {
+    return movieLendings
+      .find(lending => lending.movieId == movieId && lending.userId == userId
+        && !lending.returnedAt)
   }
 }

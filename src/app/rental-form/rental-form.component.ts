@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-rental-form',
@@ -7,23 +7,20 @@ import { FormBuilder } from '@angular/forms';
   styleUrls: ['./rental-form.component.sass']
 })
 export class RentalFormComponent implements OnInit {
-  rentForm;
-  minAllowedDate: Date;
-  maxAllowedDate: Date;
+  rentForm: FormGroup
+  minAllowedDate: Date
+  maxAllowedDate: Date
+  rentUntil: Date
 
-  constructor(
-    private formBuilder: FormBuilder
-  ) { }
+  constructor() { }
 
   ngOnInit() {
-    this.minAllowedDate = new Date()
-    this.maxAllowedDate = new Date(
-      this.minAllowedDate.getFullYear(),
-      this.minAllowedDate.getMonth(),
-      this.minAllowedDate.getDate() + 20
-    )
-    this.rentForm = this.formBuilder.group({
-      "borrowedAt": ''
+    const now = new Date().getTime()
+    const dayMillis = 24 * 3600 * 1000
+    this.minAllowedDate = new Date(now + dayMillis)
+    this.maxAllowedDate = new Date(now + (dayMillis * 20))
+    this.rentForm = new FormGroup({
+      rentUntil: new FormControl(this.rentUntil, Validators.required)
     })
   }
 

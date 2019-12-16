@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,13 +18,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MovieListComponent } from './movie-list/movie-list.component';
 import { MovieDetailsComponent } from './movie-details/movie-details.component';
 import { RentalFormComponent } from './rental-form/rental-form.component';
+import { RentalHistoryComponent } from './rental-history/rental-history.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MovieListComponent,
     MovieDetailsComponent,
-    RentalFormComponent
+    RentalFormComponent,
+    RentalHistoryComponent
   ],
   imports: [
     BrowserModule,
@@ -42,10 +43,6 @@ import { RentalFormComponent } from './rental-form/rental-form.component';
     MatInputModule,
     MatNativeDateModule,
     MatDatepickerModule,
-    RouterModule.forRoot([
-      { path: '', component: MovieListComponent },
-      { path: 'movies/:movieId', component: MovieDetailsComponent }
-    ])
   ],
   providers: [],
   bootstrap: [AppComponent]

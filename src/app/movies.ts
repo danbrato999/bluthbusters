@@ -50,15 +50,15 @@ export const movieLendings = [
         "id": "lending0001",
         "movieId": "tt0088763",
         "userId": "user0001",
-        "borrowedAt": new Date(2019, 12, 4, 10),
-        "borrowUntil": new Date(2019, 12, 5),
-        "returnedAt": new Date(2019, 12, 5, 18)
+        "borrowedAt": new Date(1575471600000),
+        "borrowUntil": new Date(1575522000000),
+        "returnedAt": new Date(1575586800000)
     },
     {
         "id": "lending0002",
         "movieId": "tt0088763",
         "userId": "user0001",
-        "borrowedAt": new Date(2019, 12, 7, 16),
-        "borrowUntil": new Date(2019, 12, 12)
+        "borrowedAt": new Date(1575752400000),
+        "borrowUntil": new Date(1576184400000)
     }
 ]
