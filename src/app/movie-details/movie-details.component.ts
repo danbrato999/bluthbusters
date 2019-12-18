@@ -4,6 +4,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { MoviesService } from '../movies.service';
 import { MovieRentalsService } from '../movie-rentals.service';
+import { Movie, MovieRenting } from '../models';
 
 @Component({
   selector: 'app-movie-details',
@@ -11,9 +12,10 @@ import { MovieRentalsService } from '../movie-rentals.service';
   styleUrls: ['./movie-details.component.sass']
 })
 export class MovieDetailsComponent implements OnInit {
-  movie
+  movie: Movie
   movieTrailer: SafeResourceUrl
-  movieRentDetails: Object
+  movieRentDetails: MovieRenting
+  error: string
 
   constructor(
     private route: ActivatedRoute,
@@ -25,10 +27,15 @@ export class MovieDetailsComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       const movieId = params.get("movieId")
-      this.movie = this.moviesService.getMovieById(movieId)
-      this.movieTrailer = this.movie.trailer ? 
-          this.sanitizer.bypassSecurityTrustResourceUrl(this.movie.trailer) : ""
-      this.movieRentDetails = this.rentalService.getCurrentRentingDetails(movieId, "user0001")
+      this.moviesService.getMovieById(movieId)
+          .subscribe(response => {
+            this.movie = { ... response.body }
+            this.movieTrailer = this.movie.trailer ? this.sanitizer.bypassSecurityTrustResourceUrl(this.movie.trailer) : ""
+          }, error => this.error = error)
+      this.rentalService.getCurrentRentingDetails(movieId)
+          .subscribe(response => {
+            this.movieRentDetails = { ... response.body }
+          })
     })
   }
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { MovieRentalsService } from '../movie-rentals.service';
+import { DetailedMovieRenting } from '../models';
 
 @Component({
   selector: 'app-rental-history',
@@ -9,14 +10,15 @@ import { MovieRentalsService } from '../movie-rentals.service';
 })
 export class RentalHistoryComponent implements OnInit {
 
-  rentals: Array<Object>
+  rentals: Array<DetailedMovieRenting>
 
   constructor(
     private rentalService: MovieRentalsService
   ) { }
 
   ngOnInit() {
-    this.rentals = this.rentalService.getUserHistory("user0001")
-    console.log(this.rentals)
+    this.rentalService.getUserHistory().subscribe(response => {
+      this.rentals = response.body
+    })
   }
 }

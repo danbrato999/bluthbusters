@@ -1,3 +1,4 @@
+<p *ngIf="error">{{error}}</p>
 <mat-card *ngIf="movie" class="movie-card">
     <mat-card-header>
         <img mat-card-avatar [src]="movie.externalData.poster">
@@ -10,7 +11,7 @@
     <mat-card-content class="movie-description">
         <p>{{ movie.externalData.description }}</p>
         <span *ngIf="movieRentDetails">
-            *You currently have a copy of this movie. Please remember to return it before {{ movieRentDetails.borrowUntil | date:'fullDate' }}
+            *You currently have a copy of this movie. Please remember to return it before {{ movieRentDetails.rentUntil | date:'fullDate' }}
         </span>
     </mat-card-content>
     <mat-accordion>
