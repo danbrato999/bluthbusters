@@ -12,6 +12,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,6 +25,7 @@ import { MovieListComponent } from './movie-list/movie-list.component';
 import { MovieDetailsComponent } from './movie-details/movie-details.component';
 import { RentalFormComponent } from './rental-form/rental-form.component';
 import { RentalHistoryComponent } from './rental-history/rental-history.component';
+import { MovieFormComponent } from './movie-form/movie-form.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +33,8 @@ import { RentalHistoryComponent } from './rental-history/rental-history.componen
     MovieListComponent,
     MovieDetailsComponent,
     RentalFormComponent,
-    RentalHistoryComponent
+    RentalHistoryComponent,
+    MovieFormComponent
   ],
   imports: [
     BrowserModule,
@@ -45,8 +52,14 @@ import { RentalHistoryComponent } from './rental-history/rental-history.componen
     MatInputModule,
     MatNativeDateModule,
     MatDatepickerModule,
+    MatGridListModule,
+    MatDialogModule,
+    MatRadioModule,
+    MatStepperModule,
+    MatProgressSpinnerModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [MovieFormComponent]
 })
 export class AppModule { }

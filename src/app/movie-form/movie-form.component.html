@@ -1,0 +1,91 @@
+<h2 mat-dialog-title>Add movie</h2>
+<mat-dialog-content>
+    <mat-vertical-stepper linear="true" #stepper>
+        <mat-step [stepControl]="searchForm">
+            <form [formGroup]="searchForm" (ngSubmit)="searchMovieFromExternalSource(searchForm.value)">
+                <ng-template matStepLabel>Search movie data</ng-template>
+                <div>
+                    <label id="search-type-label">Search by </label>
+                    <mat-radio-group class="search-type-radio-group" aria-labelledby="search-type-label" formControlName="type">
+                        <mat-radio-button class="search-type-radio" *ngFor="let sType of searchTypes" [value]="sType.type">
+                            {{sType.text}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <mat-form-field>
+                    <input matInput placeholder="Value" type="search" formControlName="value" required>
+                </mat-form-field>
+                <div>
+                    <button mat-button matStepperNext>Search</button>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="posterForm">
+            <form [formGroup]="posterForm">
+                <ng-template matStepLabel>Select poster</ng-template>
+                <mat-spinner *ngIf="loading"></mat-spinner>
+                <p *ngIf="errorMessage">{{ errorMessage }}</p>
+                <div class="external-data-form poster-form" *ngIf="!errorMessage">
+                    <img [src]="posterForm.value.poster">
+                    <mat-form-field>
+                        <input matInput placeholder="Poster" type="text" formControlName="poster" required>
+                    </mat-form-field>
+                    <div>
+                        <button mat-button matStepperNext>Next</button>
+                    </div>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="trailerForm">
+            <form [formGroup]="trailerForm">
+                <ng-template matStepLabel>Trailer</ng-template>
+                <div class="external-data-form">
+                    <div class="trailer-container" *ngIf="escapedTrailer()">
+                        <iframe [src]="escapedTrailer()" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <mat-form-field>
+                        <input matInput placeholder="Youtube Link" type="text" formControlName="youtubeLink">
+                    </mat-form-field>
+                    <div>
+                        <button mat-button matStepperNext>Next</button>
+                    </div>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="externalDataForm">
+            <form [formGroup]="externalDataForm">
+                <ng-template matStepLabel>Details</ng-template>
+                <div class="external-data-form">
+                    <mat-form-field>
+                        <input matInput placeholder="imdbId" type="text" formControlName="imdbId">
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Title" type="text" formControlName="title" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Year" type="number" formControlName="year" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Director" type="text" formControlName="director" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Genre" type="text" formControlName="genre" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Runtime" type="text" formControlName="runtime" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <textarea matInput placeholder="Description" type="text" formControlName="description" required></textarea>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Copies" type="number" formControlName="copies" required>
+                    </mat-form-field>
+                </div>
+            </form>
+        </mat-step>
+    </mat-vertical-stepper>
+</mat-dialog-content>
+<div mat-dialog-actions>
+    <button mat-button (click)="closeDialog()">Cancel</button>
+    <button mat-button [mat-dialog-close]="joinedMovieData()" [disabled]="!isMovieValid()">Add</button>
+</div>

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { MovieFormComponent } from '../movie-form/movie-form.component';
 
-import {MoviesService} from '../movies.service';
-import { PaginatedList, Movie } from '../models';
+import { MoviesService } from '../movies.service';
+import { Movie } from '../models';
 
 @Component({
   selector: 'app-movie-list',
@@ -14,7 +16,9 @@ export class MovieListComponent implements OnInit {
   private movies: Array<Movie>
 
   constructor(
-    private moviesService: MoviesService
+    private moviesService: MoviesService,
+    private dialog: MatDialog,
+    private router: Router
   ) {
     this.movieCount = 0
     this.movies = []
@@ -27,5 +31,19 @@ export class MovieListComponent implements OnInit {
           this.movieCount = totalCount
           this.movies = data
         })
+  }
+
+  openForm() {
+    const dialogRef = this.dialog.open(MovieFormComponent, {
+      width: '650px'
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.moviesService.addMovie(result).subscribe(newId => {
+          this.router.navigate(['movies', newId.id])
+        }, error => console.error(error))
+      }
+    })
   }
 }

@@ -14,11 +14,17 @@ export interface Inventory {
     available: number
 }
 
+export interface MovieFormApi {
+    externalData: MovieData,
+    trailer: string,
+    copies: number
+}
+
 export interface Movie {
-        id: string
-        externalData: MovieData,
-        trailer: string
-        inventory: Inventory
+    id: string
+    externalData: MovieData,
+    trailer: string
+    inventory: Inventory
 }
 
 export interface PaginatedList<T> {
@@ -41,4 +47,13 @@ export interface DetailedMovieRenting {
     rentUntil: Date
     returnedAt: Date
     movie: MovieData
+}
+
+export interface MovieDataSearch {
+    type: string
+    value: string
+}
+
+export interface IdObject {
+    id: string
 }

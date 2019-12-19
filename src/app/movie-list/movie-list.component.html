@@ -1,4 +1,11 @@
-<h2>For Rent</h2>
+<mat-grid-list cols="4" rowHeight="40px">
+    <mat-grid-tile colspan="3" rowspan="1">
+        <h2>For Rent</h2>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1" rowspan="1">
+        <button mat-button color="primary" (click)="openForm()">Add movie</button>
+    </mat-grid-tile>
+</mat-grid-list>
 <mat-nav-list>
     <mat-list-item *ngFor="let movie of movies">
         <img matListAvatar [src]="movie.externalData.poster"/>

@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/htt
 
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { PaginatedList, Movie } from './models';
+import { PaginatedList, Movie, MovieFormApi, IdObject } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -26,15 +26,24 @@ export class MoviesService {
                         .pipe(catchError(this.handleNotFound))
   }
 
-  private handleNotFound(error: HttpErrorResponse) { 
-    var message = "Unexpected error in the app. Please try again later"
+  addMovie(movieForm: MovieFormApi) : Observable<IdObject> {
+    return this.httpClient.post<IdObject>(`${this.apiUrl}/movies`, movieForm)
+                        .pipe(catchError(this.handleUnexpected))
+  }
+
+  private handleNotFound(error: HttpErrorResponse) {
+    if (error.status === 404)
+      return throwError('Requested movie not found')
+    else
+      return this.handleUnexpected(error)
+  }
+
+  private handleUnexpected(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent)
       console.error('An error occurred:', error.error.message);
-    else if (error.status == 404)
-        message = "Requested movie not found"
     else
-        console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
-    
-    return throwError(message)
+      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+
+    return throwError('Unexpected error in the app. Please try again later')
   }
 }

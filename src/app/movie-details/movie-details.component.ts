@@ -34,7 +34,8 @@ export class MovieDetailsComponent implements OnInit {
           }, error => this.error = error)
       this.rentalService.getCurrentRentingDetails(movieId)
           .subscribe(response => {
-            this.movieRentDetails = { ... response.body }
+            if (response.status === 200)
+              this.movieRentDetails = { ... response.body }
           })
     })
   }
