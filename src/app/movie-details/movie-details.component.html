@@ -5,8 +5,8 @@
         <mat-card-title>{{ movie.externalData.title }}</mat-card-title>
         <mat-card-subtitle>Copies available: {{ movie.inventory.available }}</mat-card-subtitle>
     </mat-card-header>
-    <div class="trailer-container" *ngIf="movieTrailer">
-        <iframe [src]="movieTrailer" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <div class="trailer-container" *ngIf="getMovieEmbed()">
+        <iframe [src]="getMovieEmbed()" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
     <mat-card-content class="movie-description">
         <p>{{ movie.externalData.description }}</p>
@@ -31,4 +31,8 @@
             <app-rental-form (onRent)="rentMovie($event)"></app-rental-form>
         </mat-expansion-panel>
     </mat-accordion>
+    <mat-card-actions>
+        <a mat-button [routerLink]="['/']">Back</a>
+        <button mat-button (click)="openMovieDialog()">Edit</button>
+    </mat-card-actions>
 </mat-card>

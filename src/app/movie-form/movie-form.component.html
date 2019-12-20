@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Add movie</h2>
 <mat-dialog-content>
-    <mat-vertical-stepper linear="true" #stepper>
-        <mat-step [stepControl]="searchForm">
+    <mat-vertical-stepper [linear]="!isUpdate()" #stepper>
+        <mat-step *ngIf="!isUpdate()" [stepControl]="searchForm">
             <form [formGroup]="searchForm" (ngSubmit)="searchMovieFromExternalSource(searchForm.value)">
                 <ng-template matStepLabel>Search movie data</ng-template>
                 <div>

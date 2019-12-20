@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MovieDataSearch, MovieFormApi } from '../models';
+import { MovieDataSearch, MovieFormApi, Movie } from '../models';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { OmdbClientService } from '../omdb-client.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-movie-form',
@@ -24,6 +25,7 @@ export class MovieFormComponent implements OnInit {
   errorMessage: string
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: Movie,
     private dialogRef: MatDialogRef<MovieFormComponent>,
     private sanitizer: DomSanitizer,
     private omdbClient: OmdbClientService,
@@ -59,6 +61,14 @@ export class MovieFormComponent implements OnInit {
       description: ['', Validators.required],
       copies: ['', [Validators.required, Validators.min(1)]]
     })
+
+    if (this.data) {
+      this.externalDataForm.patchValue(this.data.externalData)
+      this.externalDataForm.patchValue({copies: this.data.inventory.copies})
+      this.posterForm.patchValue(this.data.externalData)
+      const youtubeLink = 'https://www.youtube.com/watch?v=' + this.data.trailer.slice(this.data.trailer.lastIndexOf('/') + 1)
+      this.trailerForm.patchValue({youtubeLink: youtubeLink})
+    }
   }
 
   searchMovieFromExternalSource(search: MovieDataSearch) {
@@ -95,6 +105,10 @@ export class MovieFormComponent implements OnInit {
 
   isMovieValid() : boolean {
     return this.posterForm.valid && this.trailerForm.valid && this.externalDataForm.valid
+  }
+
+  isUpdate() : boolean {
+    return Boolean(this.data)
   }
 
   closeDialog() {

@@ -31,6 +31,11 @@ export class MoviesService {
                         .pipe(catchError(this.handleUnexpected))
   }
 
+  updateMovie(id: string, movieForm: MovieFormApi) : Observable<Movie> {
+    return this.httpClient.put<Movie>(`${this.apiUrl}/movies/${id}`, movieForm)
+                        .pipe(catchError(this.handleNotFound))
+  }
+
   private handleNotFound(error: HttpErrorResponse) {
     if (error.status === 404)
       return throwError('Requested movie not found')
