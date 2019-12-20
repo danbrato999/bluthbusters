@@ -28,7 +28,7 @@
             <mat-expansion-panel-header>
                 <mat-panel-title>Rent movie</mat-panel-title>
             </mat-expansion-panel-header>
-            <app-rental-form></app-rental-form>
+            <app-rental-form (onRent)="rentMovie($event)"></app-rental-form>
         </mat-expansion-panel>
     </mat-accordion>
 </mat-card>

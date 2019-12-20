@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { MovieRenting, DetailedMovieRenting } from './models';
+import { MovieRenting, DetailedMovieRenting, MovieRentForm } from './models';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -26,15 +26,26 @@ export class MovieRentalsService {
           { observe: 'response'} )
   }
 
-  private handleNotFound(error: HttpErrorResponse) { 
-    var message = "Unexpected error in the app. Please try again later"
+  rentMovie(movieId: string, rentForm: MovieRentForm) : Observable<MovieRenting> {
+    const formatedForm = { rentUntil: rentForm.rentUntil.toISOString().slice(0, 10) }
+    return this.httpClient.post<MovieRenting>(`${this.apiUrl}/movie-rentals/${movieId}`, formatedForm)
+                            .pipe(catchError(this.handleRentFailure))
+
+  }
+
+  returnMovie(movieId: string) : Observable<HttpResponse<any>> {
+    return this.httpClient.delete(`${this.apiUrl}/movie-rentals/${movieId}`, { observe: 'response' })
+  }
+
+  private handleRentFailure(error: HttpErrorResponse) : Observable<never> {
+    if (error.status === 400)
+      return throwError("You can't rent this movie. Make sure it has enough copies to rent and you don't have a copy now")
+    
     if (error.error instanceof ErrorEvent)
       console.error('An error occurred:', error.error.message);
-    else if (error.status == 404)
-        message = "Requested movie not found"
     else
-        console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
-    
-    return throwError(message)
+      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+
+    return throwError('Unexpected error in the app. Please try again later')
   }
 }

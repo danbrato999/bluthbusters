@@ -9,7 +9,6 @@ import { DetailedMovieRenting } from '../models';
   styleUrls: ['./rental-history.component.sass']
 })
 export class RentalHistoryComponent implements OnInit {
-
   rentals: Array<DetailedMovieRenting>
 
   constructor(
@@ -20,5 +19,12 @@ export class RentalHistoryComponent implements OnInit {
     this.rentalService.getUserHistory().subscribe(response => {
       this.rentals = response.body
     })
+  }
+
+  returnMovie(renting: DetailedMovieRenting) {
+    this.rentalService.returnMovie(renting.movieId).subscribe(response => {
+      const rentingIndex = this.rentals.findIndex( r => r.id == renting.id)
+      this.rentals[rentingIndex].returnedAt = new Date()
+    }, error => console.error(error))
   }
 }

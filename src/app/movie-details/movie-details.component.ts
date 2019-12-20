@@ -4,7 +4,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { MoviesService } from '../movies.service';
 import { MovieRentalsService } from '../movie-rentals.service';
-import { Movie, MovieRenting } from '../models';
+import { Movie, MovieRenting, MovieRentForm } from '../models';
 
 @Component({
   selector: 'app-movie-details',
@@ -43,5 +43,12 @@ export class MovieDetailsComponent implements OnInit {
   canRentMovie() : Boolean {
     return this.movie.inventory.available > 0 
             && !this.movieRentDetails
+  }
+
+  rentMovie(rentForm: MovieRentForm) {
+    this.rentalService.rentMovie(this.movie.id, rentForm)
+            .subscribe(response => {
+              this.movieRentDetails = response
+            }, error => console.log(error))
   }
 }

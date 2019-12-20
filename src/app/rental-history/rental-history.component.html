@@ -5,7 +5,7 @@
         <p matLine *ngIf="rental.returnedAt;else deadline"><b>Returned At: </b>{{ rental.returnedAt | date:'medium' }}</p>
         <ng-template #deadline>
             <p matLine class="deadline-text"><b>Deadline: </b>{{ rental.rentUntil | date }}</p>
-            <button mat-raised-button color="accent">Return movie</button>
+            <button mat-raised-button color="accent" (click)="returnMovie(rental)">Return movie</button>
         </ng-template>
     </mat-list-item>
 </mat-list>

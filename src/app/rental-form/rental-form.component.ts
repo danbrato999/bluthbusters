@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MovieRentForm } from '../models';
 
 @Component({
   selector: 'app-rental-form',
@@ -12,6 +13,7 @@ export class RentalFormComponent implements OnInit {
   maxAllowedDate: Date
   rentUntil: Date
 
+  @Output() onRent = new EventEmitter<MovieRentForm>();
   constructor() { }
 
   ngOnInit() {
@@ -24,7 +26,7 @@ export class RentalFormComponent implements OnInit {
     })
   }
 
-  onSubmit(data) {
-    console.log("Form submitted -> ", data)
+  onSubmit(rentForm: MovieRentForm) {
+    this.onRent.emit(rentForm)
   }
 }

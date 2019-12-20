@@ -34,8 +34,13 @@ export class MoviesService {
   private handleNotFound(error: HttpErrorResponse) {
     if (error.status === 404)
       return throwError('Requested movie not found')
+    
+    if (error.error instanceof ErrorEvent)
+      console.error('An error occurred:', error.error.message);
     else
-      return this.handleUnexpected(error)
+      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+
+    return throwError('Unexpected error in the app. Please try again later')
   }
 
   private handleUnexpected(error: HttpErrorResponse) {

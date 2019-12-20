@@ -32,6 +32,10 @@ export interface PaginatedList<T> {
     data: Array<T>
 }
 
+export interface MovieRentForm {
+    rentUntil: Date
+}
+
 export interface MovieRenting {
     id: string
     movieId: string
