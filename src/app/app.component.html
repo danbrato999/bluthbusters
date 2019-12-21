@@ -1,18 +1,4 @@
-<mat-toolbar color="primary">
-    <mat-toolbar-row>
-        <a mat-button [routerLink]="['/']">
-            <mat-icon aria-hidden="false" aria-label="Example home icon">camera_enhance</mat-icon>
-            <span class="logo-text">BluthBusters</span>
-        </a>
-        <a mat-button [routerLink]="['/']">Movies</a>
-        <!-- This fills the remaining space of the current row -->
-        <span class="menu-fill-remaining-space"></span>
-        <a class="history-menu-option" mat-button [routerLink]="['/rental-history']">
-            <mat-icon aria-hidden="false" aria-label="View History">history</mat-icon>
-        </a>
-        <mat-icon class="menu-logout" aria-hidden="false" aria-label="Log Out">input</mat-icon>
-    </mat-toolbar-row>
-</mat-toolbar>
+<app-bb-topbar></app-bb-topbar>
 <div class="basic-container bb-root">
     <router-outlet></router-outlet>
 </div>

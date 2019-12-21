@@ -1,0 +1,11 @@
+<mat-grid-list cols="4" rowHeight="100px">
+    <mat-grid-tile colspan="1" rowspan="1"></mat-grid-tile>
+    <mat-grid-tile colspan="2" rowspan="1" *ngIf="afAuth.user | async as user; else loginOptions">
+        <h1>Hello {{ user.displayName }}</h1>
+    </mat-grid-tile>
+    <ng-template #loginOptions>
+        <mat-grid-tile colspan="2" rowspan="1">
+            <button class="google-sign-in" (click)="googleSignIn()"></button>
+        </mat-grid-tile>
+    </ng-template> 
+</mat-grid-list>

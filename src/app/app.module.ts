@@ -17,6 +17,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,6 +29,9 @@ import { MovieDetailsComponent } from './movie-details/movie-details.component';
 import { RentalFormComponent } from './rental-form/rental-form.component';
 import { RentalHistoryComponent } from './rental-history/rental-history.component';
 import { MovieFormComponent } from './movie-form/movie-form.component';
+import { LoginComponent } from './login/login.component';
+import { BbTopbarComponent } from './bb-topbar/bb-topbar.component';
+import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 
 @NgModule({
   declarations: [
@@ -34,7 +40,9 @@ import { MovieFormComponent } from './movie-form/movie-form.component';
     MovieDetailsComponent,
     RentalFormComponent,
     RentalHistoryComponent,
-    MovieFormComponent
+    MovieFormComponent,
+    LoginComponent,
+    BbTopbarComponent
   ],
   imports: [
     BrowserModule,
@@ -57,8 +65,10 @@ import { MovieFormComponent } from './movie-form/movie-form.component';
     MatRadioModule,
     MatStepperModule,
     MatProgressSpinnerModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
   ],
-  providers: [],
+  providers: [AngularFireAuthGuard],
   bootstrap: [AppComponent],
   entryComponents: [MovieFormComponent]
 })
