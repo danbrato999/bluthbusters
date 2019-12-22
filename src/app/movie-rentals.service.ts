@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 import { MovieRenting, DetailedMovieRenting, MovieRentForm } from './models';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, flatMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,29 +13,61 @@ export class MovieRentalsService {
   private apiUrl: string
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private afAuth: AngularFireAuth
   ) {
     this.apiUrl = "http://localhost:9900"
   }
 
   getUserHistory() : Observable<HttpResponse<Array<DetailedMovieRenting>>> {
-    return this.httpClient.get<Array<DetailedMovieRenting>>(`${this.apiUrl}/customers/history`, { observe: 'response' })
+    return this.afAuth.idToken.pipe(
+      flatMap(token =>
+        this.httpClient.get<Array<DetailedMovieRenting>>(`${this.apiUrl}/customers/history`,
+          {
+            headers: new HttpHeaders({'Authorization': `Bearer ${token}`}),
+            observe: 'response'
+          }
+        )
+      )
+    )
   }
 
   getCurrentRentingDetails(movieId: String) : Observable<HttpResponse<MovieRenting>> {
-    return this.httpClient.get<MovieRenting>(`${this.apiUrl}/movie-rentals/${movieId}/rented`,
-          { observe: 'response'} )
+    return this.afAuth.idToken.pipe(
+      flatMap(token =>
+        this.httpClient.get<MovieRenting>(`${this.apiUrl}/movie-rentals/${movieId}/rented`,
+          {
+            headers: new HttpHeaders({'Authorization': `Bearer ${token}`}),
+            observe: 'response'
+          }
+        )
+      )
+    )
   }
 
   rentMovie(movieId: string, rentForm: MovieRentForm) : Observable<MovieRenting> {
     const formatedForm = { rentUntil: rentForm.rentUntil.toISOString().slice(0, 10) }
-    return this.httpClient.post<MovieRenting>(`${this.apiUrl}/movie-rentals/${movieId}`, formatedForm)
-                            .pipe(catchError(this.handleRentFailure))
 
+    return this.afAuth.idToken.pipe(
+      flatMap(token =>
+        this.httpClient.post<MovieRenting>(`${this.apiUrl}/movie-rentals/${movieId}`, formatedForm,
+          { headers: new HttpHeaders({'Authorization': `Bearer ${token}`}) }
+        ).pipe(catchError(this.handleRentFailure))
+      )
+    )
   }
 
   returnMovie(movieId: string) : Observable<HttpResponse<any>> {
-    return this.httpClient.delete(`${this.apiUrl}/movie-rentals/${movieId}`, { observe: 'response' })
+    return this.afAuth.idToken.pipe(
+      flatMap(token =>
+        this.httpClient.delete(`${this.apiUrl}/movie-rentals/${movieId}`,
+          {
+            headers: new HttpHeaders({'Authorization': `Bearer ${token}`}),
+            observe: 'response'
+          }
+        )
+      )
+    )
   }
 
   private handleRentFailure(error: HttpErrorResponse) : Observable<never> {

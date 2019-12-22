@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 import { MovieDataSearch, MovieData } from './models';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, flatMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +13,20 @@ export class OmdbClientService {
   private apiUrl: string
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private afAuth: AngularFireAuth
   ) {
     this.apiUrl = "http://localhost:9900"
   }
 
   searchExternalMovieData(search: MovieDataSearch) : Observable<MovieData> {
-    return this.httpClient.post<MovieData>(`${this.apiUrl}/external/omdb/search`, search)
-                          .pipe( catchError(this.handleNotFound) )
+    return this.afAuth.idToken.pipe(
+      flatMap(token =>
+        this.httpClient.post<MovieData>(`${this.apiUrl}/external/omdb/search`, search,
+          { headers: new HttpHeaders({'Authorization': `Bearer ${token}`}) })
+        .pipe(catchError(this.handleNotFound))
+      )
+    )
   }
 
   private handleNotFound(error: HttpErrorResponse) {

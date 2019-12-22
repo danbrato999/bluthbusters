@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, flatMap } from 'rxjs/operators';
 import { PaginatedList, Movie, MovieFormApi, IdObject } from './models';
 
 @Injectable({
@@ -12,28 +13,56 @@ export class MoviesService {
   private apiUrl: string
 
   constructor(
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private afAuth: AngularFireAuth
   ) {
     this.apiUrl = "http://localhost:9900"
   }
 
   getAvailableMovies() : Observable<HttpResponse<PaginatedList<Movie>>> {
-    return this.httpClient.get<PaginatedList<Movie>>(`${this.apiUrl}/movies`, { observe: 'response' })
+    return this.afAuth.idToken.pipe(
+      flatMap(token =>
+        this.httpClient.get<PaginatedList<Movie>>(`${this.apiUrl}/movies`,
+          {
+            headers: new HttpHeaders({'Authorization': `Bearer ${token}`}),
+            observe: 'response'
+          }
+        )
+      )
+    )
   }
 
   getMovieById(id: string) : Observable<HttpResponse<Movie>> {
-    return this.httpClient.get<Movie>(`${this.apiUrl}/movies/${id}`, { observe: 'response' })
-                        .pipe(catchError(this.handleNotFound))
+    return this.afAuth.idToken.pipe(
+      flatMap(token =>
+        this.httpClient.get<Movie>(`${this.apiUrl}/movies/${id}`,
+          {
+            headers: new HttpHeaders({'Authorization': `Bearer ${token}`}),
+            observe: 'response'
+          }
+        ).pipe(catchError(this.handleNotFound))
+      )
+    )
   }
 
   addMovie(movieForm: MovieFormApi) : Observable<IdObject> {
-    return this.httpClient.post<IdObject>(`${this.apiUrl}/movies`, movieForm)
-                        .pipe(catchError(this.handleUnexpected))
+    return this.afAuth.idToken.pipe(
+      flatMap(token =>
+        this.httpClient.post<IdObject>(`${this.apiUrl}/movies`, movieForm,
+          { headers: new HttpHeaders({'Authorization': `Bearer ${token}`})}
+        ).pipe(catchError(this.handleUnexpected))
+      )
+    )
   }
 
   updateMovie(id: string, movieForm: MovieFormApi) : Observable<Movie> {
-    return this.httpClient.put<Movie>(`${this.apiUrl}/movies/${id}`, movieForm)
-                        .pipe(catchError(this.handleNotFound))
+    return this.afAuth.idToken.pipe(
+      flatMap(token =>
+        this.httpClient.put<Movie>(`${this.apiUrl}/movies/${id}`, movieForm,
+          { headers: new HttpHeaders({'Authorization': `Bearer ${token}`})}
+        ).pipe(catchError(this.handleNotFound))
+      )
+    )
   }
 
   private handleNotFound(error: HttpErrorResponse) {
