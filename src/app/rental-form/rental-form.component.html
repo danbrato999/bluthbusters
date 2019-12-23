@@ -1,11 +1,17 @@
-<form [formGroup]="rentForm" (ngSubmit)="onSubmit(rentForm.value)">
-    <p>You can rent a movie for the next 20 days!!!</p>
-    <mat-form-field appearence="standard">
-        <mat-label>Rent until</mat-label>
-        <input matInput [matDatepicker]="picker" [min]="minAllowedDate" [max]="maxAllowedDate" 
-                formControlName="rentUntil" placeholder="Choose a date" required>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <button mat-button class="button" type="submit" [disabled]="!rentForm.valid">RENT</button>
-</form>
+<h2 mat-dialog-title>Rent {{ data.title }}</h2>
+<mat-dialog-content>
+    <form [formGroup]="rentForm">
+        <p>You can rent {{ data.title }} for the next 20 days!!!</p>
+        <mat-form-field appearence="standard">
+            <mat-label>Rent until</mat-label>
+            <input matInput [matDatepicker]="picker" [min]="minAllowedDate" [max]="maxAllowedDate" 
+                    formControlName="rentUntil" placeholder="Choose a date" required>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<div mat-dialog-actions>
+    <button mat-button (click)="closeDialog()">Cancel</button>
+    <button mat-button [mat-dialog-close]="rentForm.value" [disabled]="!rentForm.valid">Rent</button>
+</div>

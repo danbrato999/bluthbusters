@@ -1,6 +1,7 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MovieRentForm } from '../models';
+import { MovieRentForm, MovieData } from '../models';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-rental-form',
@@ -13,8 +14,11 @@ export class RentalFormComponent implements OnInit {
   maxAllowedDate: Date
   rentUntil: Date
 
-  @Output() onRent = new EventEmitter<MovieRentForm>();
-  constructor() { }
+  @Output() onRent = new EventEmitter<MovieRentForm>()
+  constructor(
+    @Inject(MAT_DIALOG_DATA) private data: MovieData,
+    private dialogRef: MatDialogRef<RentalFormComponent>
+  ) { }
 
   ngOnInit() {
     const now = new Date().getTime()
@@ -26,7 +30,7 @@ export class RentalFormComponent implements OnInit {
     })
   }
 
-  onSubmit(rentForm: MovieRentForm) {
-    this.onRent.emit(rentForm)
+  closeDialog() {
+    this.dialogRef.close()
   }
 }

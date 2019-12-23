@@ -2,24 +2,33 @@
     <div fxLayout="row" fxLayoutGap="20px">
         <div fxFlex="10"></div>
         <div fxFlex="70">
-            <mat-grid-list class="mat-app-background" cols="3" rowHeight="200px" gutterSize="5px">
+            <div class="mat-app-background" fxLayout="column">
                 <ng-container *ngFor="let rental of rentals">
-                    <mat-grid-tile colspan="1" rowspan="1">
-                        <img [src]="rental.movie.poster">
-                    </mat-grid-tile>
-                    <mat-grid-tile colspan="2" rowspan="1">
-                        <div class="rental-details">
-                            <h2 matLine>{{ rental.movie.title }}</h2>
-                            <p matLine><b>Rented at: </b>{{ rental.rentedAt | date:'medium' }}</p>
-                            <p matLine *ngIf="rental.returnedAt;else deadline"><b>Returned At: </b>{{ rental.returnedAt | date:'medium' }}</p>
-                            <ng-template #deadline>
-                                <p matLine class="deadline-text"><b>Deadline: </b>{{ rental.rentUntil | date }}</p>
-                                <button mat-raised-button color="accent" (click)="returnMovie(rental)">Return movie</button>
-                            </ng-template>
+                    <div class="rental-entry">
+                        <div fxLayout="row" fxFlexFill>
+                            <div class="rental-picture" fxFlex="40">
+                                <img [src]="rental.movie.poster"> 
+                            </div>
+                            <div fxFlex="60">
+                                <div class="rental-details">
+                                    <h2 matLine>
+                                        <a [routerLink]="['/movies', rental.movieId]">
+                                            {{ rental.movie.title }}
+                                        </a>
+                                    </h2>
+                                    <p matLine><b>Rented at: </b>{{ rental.rentedAt | date:'medium' }}</p>
+                                    <p matLine *ngIf="rental.returnedAt;else deadline"><b>Returned At: </b>{{ rental.returnedAt | date:'medium' }}</p>
+                                    <ng-template #deadline>
+                                        <p matLine class="deadline-text"><b>Deadline: </b>{{ rental.rentUntil | date }}</p>
+                                        <app-rental-return (returnMovie)="returnMovie(rental)"></app-rental-return>
+                                    </ng-template>
+                                </div>
+                            </div>
                         </div>
-                    </mat-grid-tile>
-                </ng-container>
-            </mat-grid-list>
+                    </div>
+                    <mat-divider></mat-divider>
+                </ng-container>                
+            </div>
         </div>
         <div fxFlex></div>
     </div>

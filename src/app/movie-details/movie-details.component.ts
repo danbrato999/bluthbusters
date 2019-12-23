@@ -1,12 +1,13 @@
-import { Component, OnInit, Sanitizer } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { MovieFormComponent } from '../movie-form/movie-form.component';
 
 import { MoviesService } from '../movies.service';
 import { MovieRentalsService } from '../movie-rentals.service';
-import { Movie, MovieRenting, MovieRentForm } from '../models';
+import { Movie, MovieRenting } from '../models';
+import { RentalFormComponent } from '../rental-form/rental-form.component';
 
 @Component({
   selector: 'app-movie-details',
@@ -19,6 +20,7 @@ export class MovieDetailsComponent implements OnInit {
   error: string
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private moviesService: MoviesService,
     private rentalService: MovieRentalsService,
@@ -50,13 +52,6 @@ export class MovieDetailsComponent implements OnInit {
             && !this.movieRentDetails
   }
 
-  rentMovie(rentForm: MovieRentForm) {
-    this.rentalService.rentMovie(this.movie.id, rentForm)
-            .subscribe(response => {
-              this.movieRentDetails = response
-            }, error => console.log(error))
-  }
-
   openMovieDialog() {
     const dialogRef = this.dialog.open(MovieFormComponent, {
       width: '650px', data: this.movie
@@ -67,6 +62,19 @@ export class MovieDetailsComponent implements OnInit {
         this.moviesService.updateMovie(this.movie.id, result).subscribe(response => {
           this.movie = response
         }, error => this.error = error)
+    })
+  }
+
+  openRentMovieForm() {
+    const dialogRef = this.dialog.open(RentalFormComponent, {
+      data: this.movie.externalData,
+      width: '400px'
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result)
+        this.rentalService.rentMovie(this.movie.id, result)
+            .subscribe(() => this.router.navigate(['rental-history']), error => console.log(error))
     })
   }
 }

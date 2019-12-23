@@ -17,6 +17,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDividerModule } from '@angular/material/divider';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -33,6 +34,8 @@ import { MovieFormComponent } from './movie-form/movie-form.component';
 import { LoginComponent } from './login/login.component';
 import { BbTopbarComponent } from './bb-topbar/bb-topbar.component';
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { RentalReturnComponent } from './rental-return/rental-return.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +46,9 @@ import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
     RentalHistoryComponent,
     MovieFormComponent,
     LoginComponent,
-    BbTopbarComponent
+    BbTopbarComponent,
+    ConfirmationDialogComponent,
+    RentalReturnComponent
   ],
   imports: [
     BrowserModule,
@@ -66,12 +71,13 @@ import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
     MatRadioModule,
     MatStepperModule,
     MatProgressSpinnerModule,
+    MatDividerModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     FlexLayoutModule,
   ],
   providers: [AngularFireAuthGuard],
   bootstrap: [AppComponent],
-  entryComponents: [MovieFormComponent]
+  entryComponents: [MovieFormComponent, RentalFormComponent, ConfirmationDialogComponent]
 })
 export class AppModule { }

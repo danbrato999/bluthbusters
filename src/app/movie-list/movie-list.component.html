@@ -6,8 +6,7 @@
             <img mat-card-image [src]="movie.externalData.poster" class="image">
             <mat-card-content flex>{{movie.externalData.description}}</mat-card-content>
             <mat-card-actions align="end">
-                <a mat-button [routerLink]="['movies', movie.id]">Details</a>
-                <button mat-raised-button color="accent">Rent</button>
+                <a mat-raised-button color="accent" [routerLink]="['movies', movie.id]">Details</a>
             </mat-card-actions>
           </mat-card>
     </div>
