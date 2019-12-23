@@ -1,11 +1,26 @@
-<mat-list>
-    <mat-list-item *ngFor="let rental of rentals">
-        <h2 matLine>{{ rental.movie.title }}</h2>
-        <p matLine><b>Rented at: </b>{{ rental.rentedAt | date:'medium' }}</p>
-        <p matLine *ngIf="rental.returnedAt;else deadline"><b>Returned At: </b>{{ rental.returnedAt | date:'medium' }}</p>
-        <ng-template #deadline>
-            <p matLine class="deadline-text"><b>Deadline: </b>{{ rental.rentUntil | date }}</p>
-            <button mat-raised-button color="accent" (click)="returnMovie(rental)">Return movie</button>
-        </ng-template>
-    </mat-list-item>
-</mat-list>
+<div class="rental-history">
+    <div fxLayout="row" fxLayoutGap="20px">
+        <div fxFlex="10"></div>
+        <div fxFlex="70">
+            <mat-grid-list class="mat-app-background" cols="3" rowHeight="200px" gutterSize="5px">
+                <ng-container *ngFor="let rental of rentals">
+                    <mat-grid-tile colspan="1" rowspan="1">
+                        <img [src]="rental.movie.poster">
+                    </mat-grid-tile>
+                    <mat-grid-tile colspan="2" rowspan="1">
+                        <div class="rental-details">
+                            <h2 matLine>{{ rental.movie.title }}</h2>
+                            <p matLine><b>Rented at: </b>{{ rental.rentedAt | date:'medium' }}</p>
+                            <p matLine *ngIf="rental.returnedAt;else deadline"><b>Returned At: </b>{{ rental.returnedAt | date:'medium' }}</p>
+                            <ng-template #deadline>
+                                <p matLine class="deadline-text"><b>Deadline: </b>{{ rental.rentUntil | date }}</p>
+                                <button mat-raised-button color="accent" (click)="returnMovie(rental)">Return movie</button>
+                            </ng-template>
+                        </div>
+                    </mat-grid-tile>
+                </ng-container>
+            </mat-grid-list>
+        </div>
+        <div fxFlex></div>
+    </div>
+</div>

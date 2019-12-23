@@ -19,6 +19,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -67,6 +68,7 @@ import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
     MatProgressSpinnerModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
+    FlexLayoutModule,
   ],
   providers: [AngularFireAuthGuard],
   bootstrap: [AppComponent],

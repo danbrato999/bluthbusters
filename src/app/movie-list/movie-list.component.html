@@ -1,17 +1,14 @@
-<mat-grid-list cols="4" rowHeight="40px">
-    <mat-grid-tile colspan="3" rowspan="1">
-        <h2>For Rent</h2>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="1" rowspan="1">
-        <button mat-button color="primary" (click)="openForm()">Add movie</button>
-    </mat-grid-tile>
-</mat-grid-list>
-<mat-nav-list>
-    <mat-list-item *ngFor="let movie of movies">
-        <img matListAvatar [src]="movie.externalData.poster"/>
-        <a matLine [routerLink]="['movies', movie.id]">{{ movie.externalData.title }}</a>
-        <p matLine>
-            <span> {{ movie.externalData.director }} </span>
-        </p>
-    </mat-list-item>
-</mat-nav-list>
+<div class="movie-list">
+    <div fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="10px" ngClass.gt-xs="ml-10">
+        <mat-card fxFlex.sm="0 1 calc(50%-10px)" fxFlex.md="0 1 calc(33%-10px)" fxFlex.gt-md="0 1 calc(25%-10px)"
+                    *ngFor="let movie of movies">
+            <mat-card-title>{{ movie.externalData.title }}</mat-card-title>
+            <img mat-card-image [src]="movie.externalData.poster" class="image">
+            <mat-card-content flex>{{movie.externalData.description}}</mat-card-content>
+            <mat-card-actions align="end">
+                <a mat-button [routerLink]="['movies', movie.id]">Details</a>
+                <button mat-raised-button color="accent">Rent</button>
+            </mat-card-actions>
+          </mat-card>
+    </div>
+</div>
