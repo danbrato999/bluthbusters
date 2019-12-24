@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase/app';
+import { AuthProvider, Theme } from 'ngx-auth-firebaseui';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -8,16 +8,20 @@ import { auth } from 'firebase/app';
   styleUrls: ['./login.component.sass']
 })
 export class LoginComponent implements OnInit {
+  private providersEnabled: Array<AuthProvider> = [AuthProvider.Google]
+  private providersTheme: Theme = Theme.MINI_FAB
 
   constructor(
-    private afAuth: AngularFireAuth
-  ) { }
+    private router: Router
+  ) { 
+    this.providersEnabled = [AuthProvider.Google]
+    this.providersTheme = Theme.MINI_FAB
+  }
 
   ngOnInit() {
   }
 
-  googleSignIn() {
-    this.afAuth.auth.signInWithRedirect(new auth.GoogleAuthProvider())
-    console.log("Hello")
+  redirect() {
+    this.router.navigate(['/'])
   }
 }

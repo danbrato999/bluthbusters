@@ -1,7 +1,14 @@
-<div class="login-landing">
-    <div class="login-card mat-app-background">
-        <h1 class="title">Welcome to BluthBusters</h1>
-        <p>To continue, please sign in.</p>
-        <button class="google-sign-in" (click)="googleSignIn()"></button>
+<div fxLayout="column">
+    <div fxFlexOffset="10vh">
+        <div fxLayout="row">
+            <div fxFlex="30"></div>
+            <div class="main-login mat-app-background" fxFlex="40">
+                <div class="login-title">
+                    <h2>Welcome to BluthBusters</h2>
+                    <p>Your number one source for renting physical movies online</p>
+                </div>
+                <ngx-auth-firebaseui [providers]="providersEnabled" [providersTheme]="providersTheme" (onSuccess)="redirect()"></ngx-auth-firebaseui>
+            </div>
+        </div>
     </div>
 </div>

@@ -21,6 +21,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -73,6 +74,7 @@ import { RentalReturnComponent } from './rental-return/rental-return.component';
     MatProgressSpinnerModule,
     MatDividerModule,
     AngularFireModule.initializeApp(environment.firebase),
+    NgxAuthFirebaseUIModule.forRoot(environment.firebase),
     AngularFireAuthModule,
     FlexLayoutModule,
   ],

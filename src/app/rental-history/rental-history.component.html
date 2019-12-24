@@ -2,9 +2,9 @@
     <div fxLayout="row" fxLayoutGap="20px">
         <div fxFlex="10"></div>
         <div fxFlex="70">
-            <div class="mat-app-background" fxLayout="column">
-                <ng-container *ngFor="let rental of rentals">
-                    <div class="rental-entry">
+            <div class="rental-history-container mat-app-background" fxLayout="column">
+                <ng-container *ngIf="rentals && rentals.length; else noHistory">
+                    <div *ngFor="let rental of rentals" class="rental-entry">
                         <div fxLayout="row" fxFlexFill>
                             <div class="rental-picture" fxFlex="40">
                                 <img [src]="rental.movie.poster"> 
@@ -27,7 +27,13 @@
                         </div>
                     </div>
                     <mat-divider></mat-divider>
-                </ng-container>                
+                </ng-container>
+                <ng-template #noHistory>
+                    <div class="no-history">
+                        <h1>You have no movies in your history</h1>
+                        <a [routerLink]="['/']">Rent now</a>
+                    </div>
+                </ng-template>
             </div>
         </div>
         <div fxFlex></div>
