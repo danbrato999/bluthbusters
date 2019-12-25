@@ -1,13 +1,44 @@
 <div class="movie-list">
-    <div fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="10px" ngClass.gt-xs="ml-10">
-        <mat-card fxFlex.sm="0 1 calc(50%-10px)" fxFlex.md="0 1 calc(33%-10px)" fxFlex.gt-md="0 1 calc(25%-10px)"
-                    *ngFor="let movie of movies">
-            <mat-card-title>{{ movie.externalData.title }}</mat-card-title>
-            <img mat-card-image [src]="movie.externalData.poster" class="image">
-            <mat-card-content flex>{{movie.externalData.description}}</mat-card-content>
-            <mat-card-actions align="end">
-                <a mat-raised-button color="accent" [routerLink]="['movies', movie.id]">Details</a>
-            </mat-card-actions>
-          </mat-card>
+    <div class="loading-movies" *ngIf="loading; else moviesContainer">
+        <mat-spinner color="accent"></mat-spinner>
     </div>
+    <ng-template #moviesContainer>
+        <div class="no-movies-available mat-app-background bb-rounded" *ngIf="movieCount < 1; else movieList">
+            <h3>Ups, we're empty now</h3>
+            <p>There seems to be no movies available for rent now. If you want to, go ahead and add a new movie for rent</p>
+            <button mat-raised-button color="accent" (click)="openForm()">Add movie</button>
+        </div>
+        <ng-template #movieList>
+            <div class="movie-actions bb-rounded" fxLayout="row" fxLayoutGap="10px">
+                <div fxFlex="60" fxFlexOffset="10vh" ngClass.gt-xs="ml-10">
+                    <div class="mat-app-background bb-rounded" fxLayout="row">
+                        <mat-form-field  fxFlex="80" fxFlexOffset="10%" class="mat-app-background movie-search bb-rounded">
+                            <input matInput placeholder="Search movie" type="text" [formControl]="movieSearchForm">
+                            <button mat-button *ngIf="movieSearchForm.value" matSuffix mat-icon-button aria-label="Clear" (click)="movieSearchForm.setValue('')">
+                                <mat-icon>close</mat-icon>
+                              </button>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="movie-buttons" fxFlex>
+                    <button mat-icon-button color="accent" aria-label="Add movie" (click)="openForm()">
+                        <mat-icon>library_add</mat-icon>
+                      </button>
+                </div>
+            </div>
+            <div fxLayout.xs="column" fxLayout="row wrap" fxLayoutGap="10px" ngClass.gt-xs="ml-10">
+                <mat-card fxFlex.sm="0 1 calc(50%-10px)" fxFlex.md="0 1 calc(33%-10px)" fxFlex.gt-md="0 1 calc(25%-10px)"
+                            *ngFor="let movie of movies">
+                    <mat-card-title>{{ movie.externalData.title }}</mat-card-title>
+                    <img mat-card-image [src]="movie.externalData.poster" class="image">
+                    <mat-card-content flex>{{movie.externalData.description}}</mat-card-content>
+                    <mat-card-actions align="end">
+                        <a mat-raised-button color="accent" [routerLink]="['movies', movie.id]">Details</a>
+                    </mat-card-actions>
+                  </mat-card>
+                  <mat-paginator class="bb-rounded" fxFlex="0 1 calc(100%-10px)" [length]="movieCount" [pageSize]="limit"
+                                [pageIndex]="page" [pageSizeOptions]="limitOptions" (page)="changePage($event)"></mat-paginator>
+            </div>
+        </ng-template>
+    </ng-template>
 </div>

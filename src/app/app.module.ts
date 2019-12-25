@@ -18,6 +18,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -73,6 +74,7 @@ import { RentalReturnComponent } from './rental-return/rental-return.component';
     MatStepperModule,
     MatProgressSpinnerModule,
     MatDividerModule,
+    MatPaginatorModule,
     AngularFireModule.initializeApp(environment.firebase),
     NgxAuthFirebaseUIModule.forRoot(environment.firebase),
     AngularFireAuthModule,

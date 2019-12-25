@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 import { Observable, throwError } from 'rxjs';
@@ -19,11 +19,16 @@ export class MoviesService {
     this.apiUrl = "http://localhost:9900"
   }
 
-  getAvailableMovies() : Observable<HttpResponse<PaginatedList<Movie>>> {
+  getAvailableMovies(page: number, limit: number, name?:string) : Observable<HttpResponse<PaginatedList<Movie>>> {
+    const paginationParams = new HttpParams()
+            .set("page", page.toString())
+            .set("limit", limit.toString())
+
     return this.afAuth.idToken.pipe(
       flatMap(token =>
         this.httpClient.get<PaginatedList<Movie>>(`${this.apiUrl}/movies`,
           {
+            params: name ? paginationParams.set("name", name) : paginationParams,
             headers: new HttpHeaders({'Authorization': `Bearer ${token}`}),
             observe: 'response'
           }

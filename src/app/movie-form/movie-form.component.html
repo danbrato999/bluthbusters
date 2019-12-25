@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Add movie</h2>
+<h2 mat-dialog-title>{{ isUpdate() ? 'Update data' : 'Add new movie' }}</h2>
 <mat-dialog-content>
     <mat-vertical-stepper [linear]="!isUpdate()" #stepper>
         <mat-step *ngIf="!isUpdate()" [stepControl]="searchForm">
@@ -87,5 +87,7 @@
 </mat-dialog-content>
 <div mat-dialog-actions>
     <button mat-button (click)="closeDialog()">Cancel</button>
-    <button mat-button [mat-dialog-close]="joinedMovieData()" [disabled]="!isMovieValid()">Add</button>
+    <button mat-button [mat-dialog-close]="joinedMovieData()" [disabled]="!isMovieValid()">
+        {{ isUpdate() ? 'Save' : 'Add' }}
+    </button>
 </div>
