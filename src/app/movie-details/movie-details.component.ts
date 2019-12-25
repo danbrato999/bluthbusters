@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MovieFormComponent } from '../movie-form/movie-form.component';
 
 import { MoviesService } from '../movies.service';
@@ -17,7 +18,6 @@ import { RentalFormComponent } from '../rental-form/rental-form.component';
 export class MovieDetailsComponent implements OnInit {
   movie: Movie
   movieRentDetails: MovieRenting
-  error: string
 
   constructor(
     private router: Router,
@@ -25,7 +25,8 @@ export class MovieDetailsComponent implements OnInit {
     private moviesService: MoviesService,
     private rentalService: MovieRentalsService,
     private dialog: MatDialog,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -34,12 +35,13 @@ export class MovieDetailsComponent implements OnInit {
       this.moviesService.getMovieById(movieId)
           .subscribe(response => {
             this.movie = { ... response.body }
-          }, error => this.error = error)
+          }, error => this.showApiError(error))
+      
       this.rentalService.getCurrentRentingDetails(movieId)
           .subscribe(response => {
             if (response.status === 200)
               this.movieRentDetails = { ... response.body }
-          })
+          }, error => this.showApiError(error))
     })
   }
 
@@ -61,7 +63,7 @@ export class MovieDetailsComponent implements OnInit {
       if (result)
         this.moviesService.updateMovie(this.movie.id, result).subscribe(response => {
           this.movie = response
-        }, error => this.error = error)
+        }, error => this.showApiError(error))
     })
   }
 
@@ -74,7 +76,11 @@ export class MovieDetailsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result)
         this.rentalService.rentMovie(this.movie.id, result)
-            .subscribe(() => this.router.navigate(['rental-history']), error => console.log(error))
+            .subscribe(() => this.router.navigate(['rental-history']), error => this.showApiError(error))
     })
+  }
+
+  private showApiError(error: string) {
+    this.snackBar.open(error, 'Dismiss', { duration: 5000 })
   }
 }

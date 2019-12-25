@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material';
+import { PageEvent, MatSnackBar } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { MovieFormComponent } from '../movie-form/movie-form.component';
 
 import { MoviesService } from '../movies.service';
 import { Movie } from '../models';
-import { debounceTime, tap, switchMap, finalize } from 'rxjs/operators';
+import { debounceTime, tap, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-movie-list',
@@ -26,7 +26,8 @@ export class MovieListComponent implements OnInit {
   constructor(
     private moviesService: MoviesService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.movieSearchForm = new FormControl()
     this.movieCount = 0
@@ -53,7 +54,7 @@ export class MovieListComponent implements OnInit {
             const { totalCount, data }  = { ... result.body }
             this.movieCount = totalCount
             this.movies = data
-          })
+          }, error => this.showApiError(error))
   }
 
   openForm() {
@@ -65,7 +66,7 @@ export class MovieListComponent implements OnInit {
       if (result) {
         this.moviesService.addMovie(result).subscribe(newId => {
           this.router.navigate(['movies', newId.id])
-        }, error => console.error(error))
+        }, error => this.showApiError(error))
       }
     })
   }
@@ -84,6 +85,10 @@ export class MovieListComponent implements OnInit {
           const { totalCount, data }  = { ... result.body }
           this.movieCount = totalCount
           this.movies = data
-        }, error => console.log(error))
+        }, error => this.showApiError(error))
+  }
+
+  private showApiError(error: string) {
+    this.snackBar.open(error, 'Dismiss', { duration: 5000 })
   }
 }

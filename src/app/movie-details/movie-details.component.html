@@ -13,7 +13,7 @@
                     <div class="rent-movie-actions" *ngIf="canRentMovie()">
                         <button mat-raised-button color="accent" (click)="openRentMovieForm()">Rent now</button>
                     </div>
-                    <app-rental-return *ngIf="movieRentDetails"></app-rental-return>
+                    <app-rental-return *ngIf="movieRentDetails" [details]="movieRentDetails"></app-rental-return>
                 </mat-card-header>
                 <mat-card-content>
                     <div class="trailer-content">                    

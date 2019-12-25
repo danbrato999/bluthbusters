@@ -2,7 +2,7 @@
     <div fxLayout="row">
         <div fxFlex="10"></div>
         <div fxFlex="80">
-            <div class="bb-rounded mat-app-background" fxLayout="column">
+            <div class="bb-rounded mat-app-background" fxLayout="column" fxLayoutGap="15px">
                 <ng-container *ngIf="rentals && rentals.length; else noHistory">
                     <div *ngFor="let rental of rentals" class="rental-entry">
                         <div fxLayout="row" fxFlexFill>
@@ -20,13 +20,13 @@
                                     <p matLine *ngIf="rental.returnedAt;else deadline"><b>Returned At: </b>{{ rental.returnedAt | date:'medium' }}</p>
                                     <ng-template #deadline>
                                         <p matLine class="deadline-text"><b>Deadline: </b>{{ rental.rentUntil | date }}</p>
-                                        <app-rental-return (returnMovie)="returnMovie(rental)"></app-rental-return>
+                                        <app-rental-return [details]="rental" (returnMovie)="returnMovie(rental)"></app-rental-return>
                                     </ng-template>
                                 </div>
                             </div>
                         </div>
+                        <mat-divider></mat-divider>
                     </div>
-                    <mat-divider></mat-divider>
                 </ng-container>
                 <ng-template #noHistory>
                     <div class="no-history">

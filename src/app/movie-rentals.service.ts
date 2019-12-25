@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 import { MovieRenting, DetailedMovieRenting, MovieRentForm } from './models';
-import { Observable, throwError } from 'rxjs';
-import { catchError, flatMap } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, flatMap, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,7 @@ import { catchError, flatMap } from 'rxjs/operators';
 export class MovieRentalsService {
   private apiUrl: string
 
+  @Output() movieReturned: EventEmitter<string> = new EventEmitter()
   constructor(
     private httpClient: HttpClient,
     private afAuth: AngularFireAuth
@@ -45,6 +46,16 @@ export class MovieRentalsService {
     )
   }
 
+  getPendingMoviesCount() : Observable<number> {
+    return this.afAuth.idToken.pipe(
+      flatMap(token => this.httpClient.get(`${this.apiUrl}/customers/rentals/notifications`,
+          { headers: new HttpHeaders({'Authorization': `Bearer ${token}`}) })
+       ),
+         map<any, number>( response => response.pending || 0),
+         catchError(() => of(0))
+      )
+  }
+
   rentMovie(movieId: string, rentForm: MovieRentForm) : Observable<MovieRenting> {
     const formatedForm = { rentUntil: rentForm.rentUntil.toISOString().slice(0, 10) }
 
@@ -52,12 +63,14 @@ export class MovieRentalsService {
       flatMap(token =>
         this.httpClient.post<MovieRenting>(`${this.apiUrl}/movie-rentals/${movieId}`, formatedForm,
           { headers: new HttpHeaders({'Authorization': `Bearer ${token}`}) }
-        ).pipe(catchError(this.handleRentFailure))
+        ).pipe(
+          catchError(this.handleRentFailure)
+        )
       )
     )
   }
 
-  returnMovie(movieId: string) : Observable<HttpResponse<any>> {
+  returnMovie(movieId: string) : Observable<Date> {
     return this.afAuth.idToken.pipe(
       flatMap(token =>
         this.httpClient.delete(`${this.apiUrl}/movie-rentals/${movieId}`,
@@ -65,6 +78,9 @@ export class MovieRentalsService {
             headers: new HttpHeaders({'Authorization': `Bearer ${token}`}),
             observe: 'response'
           }
+        ).pipe(
+          tap(() => this.movieReturned.emit(movieId)),
+          map<any, Date>(() => new Date())
         )
       )
     )

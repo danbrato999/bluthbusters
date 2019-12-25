@@ -5,7 +5,10 @@
             <span class="logo-text">BluthBusters</span>
         </a>
         <span class="menu-fill-remaining-space"></span>
-        <a mat-button [routerLink]="['/rental-history']">My Movies</a>
+        <a mat-button [matBadge]="pendingRentalsCount" matBadgePosition="below after" 
+                matBadgeColor="warn" [routerLink]="['/rental-history']">
+                My Movies
+        </a>
         <a class="menu-logout" mat-button (click)="logoutUser()">
             <mat-icon class="menu-logout" aria-hidden="false" aria-label="Log Out">input</mat-icon>
         </a>

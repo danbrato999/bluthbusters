@@ -44,12 +44,7 @@ export interface MovieRenting {
     returnedAt: Date
 }
 
-export interface DetailedMovieRenting {
-    id: string
-    movieId: string
-    rentedAt: Date
-    rentUntil: Date
-    returnedAt: Date
+export interface DetailedMovieRenting extends MovieRenting {
     movie: MovieData
 }
 

@@ -1,6 +1,7 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { MovieRenting } from '../models';
 
 @Component({
   selector: 'app-rental-return',
@@ -10,6 +11,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 export class RentalReturnComponent implements OnInit {
 
   @Output() returnMovie = new EventEmitter<any>()
+  @Input() details: MovieRenting
   constructor(
     private dialog: MatDialog
   ) { }
@@ -26,5 +28,12 @@ export class RentalReturnComponent implements OnInit {
       if (result)
         this.returnMovie.emit()
     })
+  }
+
+  get buttonColor() : string {
+    const currentDate = new Date()
+    const rentUntilDate = new Date(this.details.rentUntil)
+
+    return rentUntilDate < currentDate ? 'warn' : 'accent'
   }
 }
