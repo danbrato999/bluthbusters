@@ -1,7 +1,7 @@
 <div class="rental-history">
-    <div fxLayout="row" fxLayoutGap="20px">
+    <div fxLayout="row">
         <div fxFlex="10"></div>
-        <div fxFlex="70">
+        <div fxFlex="80">
             <div class="bb-rounded mat-app-background" fxLayout="column">
                 <ng-container *ngIf="rentals && rentals.length; else noHistory">
                     <div *ngFor="let rental of rentals" class="rental-entry">
@@ -31,7 +31,7 @@
                 <ng-template #noHistory>
                     <div class="no-history">
                         <h1>You have no movies in your history</h1>
-                        <a [routerLink]="['/']">Rent now</a>
+                        <a mat-button color="primary" [routerLink]="['/']">Rent now</a>
                     </div>
                 </ng-template>
             </div>

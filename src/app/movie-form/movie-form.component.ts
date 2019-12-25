@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MovieDataSearch, MovieFormApi, Movie } from '../models';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { OmdbClientService } from '../omdb-client.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -50,11 +50,12 @@ export class MovieFormComponent implements OnInit {
       youtubeLink: ['', [Validators.required, Validators.pattern(this.linkRegex)]]
     })
 
+    const currentYear = new Date().getFullYear()
     this.externalDataForm = this.formBuilder.group({
       imdbId: ['', Validators.required],
       title: ['', Validators.required],
       genre: ['', Validators.required],
-      year: ['', [Validators.required, Validators.min(1888), Validators.max(2019)]],
+      year: ['', [Validators.required, Validators.min(1888), Validators.max(currentYear)]],
       director: ['', Validators.required],
       runtime: ['', Validators.required],
       poster: ['', Validators.required],
@@ -115,8 +116,28 @@ export class MovieFormComponent implements OnInit {
     this.dialogRef.close()
   }
 
+  isDataMissingError(control: string) : boolean {
+    return this.externalDataForm.get(control).hasError('required')
+  }
+
+  get posterControl() : AbstractControl {
+    return this.posterForm.get('poster')
+  }
+
+  get youtubeLinkControl() : AbstractControl {
+    return this.trailerForm.get('youtubeLink')
+  }
+
+  get yearControl() : AbstractControl {
+    return this.externalDataForm.get('year')
+  }
+
+  get copiesControl() : AbstractControl {
+    return this.externalDataForm.get('copies')
+  }
+
   private getEmbedVideo() : string {
-    const youtubeLink = this.trailerForm.value.youtubeLink
+    const youtubeLink: string = this.youtubeLinkControl.value || ''
     const matched = youtubeLink.match(this.linkRegex)
     return matched ? `https://www.youtube.com/embed/${matched[1]}` : ''
   }

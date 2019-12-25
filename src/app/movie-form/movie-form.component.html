@@ -13,10 +13,13 @@
                     </mat-radio-group>
                 </div>
                 <mat-form-field>
-                    <input matInput placeholder="Value" type="search" formControlName="value" required>
+                    <input id="value" matInput placeholder="Value" type="search" formControlName="value" required>
+                    <mat-error *ngIf="searchForm.get('value').hasError('required')">
+                        This field is required
+                    </mat-error>
                 </mat-form-field>
                 <div>
-                    <button mat-button matStepperNext>Search</button>
+                    <button mat-button matStepperNext [disabled]="!searchForm.valid">Search</button>
                 </div>
             </form>
         </mat-step>
@@ -26,12 +29,15 @@
                 <mat-spinner *ngIf="loading"></mat-spinner>
                 <p *ngIf="errorMessage">{{ errorMessage }}</p>
                 <div class="external-data-form poster-form" *ngIf="!errorMessage">
-                    <img [src]="posterForm.value.poster">
+                    <img [src]="posterControl.value">
                     <mat-form-field>
                         <input matInput placeholder="Poster" type="text" formControlName="poster" required>
+                        <mat-error *ngIf="posterControl.hasError('required')">
+                            This field is required
+                        </mat-error>
                     </mat-form-field>
                     <div>
-                        <button mat-button matStepperNext>Next</button>
+                        <button mat-button matStepperNext [disabled]="!posterForm.valid">Next</button>
                     </div>
                 </div>
             </form>
@@ -41,13 +47,19 @@
                 <ng-template matStepLabel>Trailer</ng-template>
                 <div class="external-data-form">
                     <div class="trailer-container" *ngIf="escapedTrailer()">
-                        <iframe [src]="escapedTrailer()" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe [src]="escapedTrailer()" frameborder="0" allowfullscreen></iframe>
                     </div>
                     <mat-form-field>
                         <input matInput placeholder="Youtube Link" type="text" formControlName="youtubeLink">
+                        <mat-error *ngIf="youtubeLinkControl.hasError('required')">
+                            This field is required
+                        </mat-error>
+                        <mat-error *ngIf="youtubeLinkControl.hasError('pattern') && !youtubeLinkControl.hasError('required')">
+                            Must be a valid youtube video link
+                        </mat-error>
                     </mat-form-field>
                     <div>
-                        <button mat-button matStepperNext>Next</button>
+                        <button mat-button matStepperNext [disabled]="!trailerForm.valid">Next</button>
                     </div>
                 </div>
             </form>
@@ -57,28 +69,58 @@
                 <ng-template matStepLabel>Details</ng-template>
                 <div class="external-data-form">
                     <mat-form-field>
-                        <input matInput placeholder="imdbId" type="text" formControlName="imdbId">
+                        <input matInput placeholder="imdbId" type="text" formControlName="imdbId" required>
+                        <mat-error *ngIf="isDataMissingError('imdbId')">
+                            This field is required
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field>
                         <input matInput placeholder="Title" type="text" formControlName="title" required>
+                        <mat-error *ngIf="isDataMissingError('title')">
+                            This field is required
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field>
                         <input matInput placeholder="Year" type="number" formControlName="year" required>
+                        <mat-error *ngIf="yearControl.hasError('required')">
+                            This field is required
+                        </mat-error>
+                        <mat-error *ngIf="yearControl.hasError('min') || yearControl.hasError('max')">
+                            Must be a year between 1888 and now
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field>
                         <input matInput placeholder="Director" type="text" formControlName="director" required>
+                        <mat-error *ngIf="isDataMissingError('director')">
+                            This field is required
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field>
                         <input matInput placeholder="Genre" type="text" formControlName="genre" required>
+                        <mat-error *ngIf="isDataMissingError('genre')">
+                            This field is required
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field>
                         <input matInput placeholder="Runtime" type="text" formControlName="runtime" required>
+                        <mat-error *ngIf="isDataMissingError('runtime')">
+                            This field is required
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field>
                         <textarea matInput placeholder="Description" type="text" formControlName="description" required></textarea>
+                        <mat-error *ngIf="isDataMissingError('description')">
+                            This field is required
+                        </mat-error>
                     </mat-form-field>
                     <mat-form-field>
                         <input matInput placeholder="Copies" type="number" formControlName="copies" required>
+                        <mat-error *ngIf="copiesControl.hasError('required')">
+                            Numeric value required
+                        </mat-error>
+                        <mat-error *ngIf="copiesControl.hasError('min')">
+                            Must be greater than 0
+                        </mat-error>
                     </mat-form-field>
                 </div>
             </form>
