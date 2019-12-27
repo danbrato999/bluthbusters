@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MovieFormApi, Movie, MovieData } from '../models';
+import { MovieFormApi, Movie, MovieData, TrailerData } from '../models';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -18,7 +18,7 @@ export class MovieFormComponent implements OnInit {
 
   // Component visual data
   searchTypes: Array<Object>
-  linkRegex: RegExp
+  trailerUrl: SafeResourceUrl
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Movie,
@@ -28,15 +28,13 @@ export class MovieFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.linkRegex = /watch\?v=(.*)$/
     this.initForms()
 
     if (this.data) {
       this.externalDataForm.patchValue(this.data.externalData)
       this.externalDataForm.patchValue({copies: this.data.inventory.copies})
       this.posterForm.patchValue(this.data.externalData)
-      const youtubeLink = 'https://www.youtube.com/watch?v=' + this.data.trailer.slice(this.data.trailer.lastIndexOf('/') + 1)
-      this.trailerForm.patchValue({youtubeLink: youtubeLink})
+      this.trailerForm.patchValue({ youtubeLink: this.data.trailer })
     }
   }
 
@@ -46,11 +44,9 @@ export class MovieFormComponent implements OnInit {
     this.externalDataForm.patchValue(movie)
   }
 
-  escapedTrailer() : SafeResourceUrl {
-    if (this.getEmbedVideo())
-      return this.sanitizer.bypassSecurityTrustResourceUrl(this.getEmbedVideo())
-    
-    return undefined
+  selectTrailer(trailerData: TrailerData) {
+    const url = 'https://www.youtube.com/embed/' + trailerData.id
+    this.trailerForm.patchValue({ youtubeLink: url })
   }
 
   joinedMovieData() : MovieFormApi {
@@ -60,7 +56,7 @@ export class MovieFormComponent implements OnInit {
     const { imdbId, title, genre, year, director, runtime, description } = externalData
 
     return { externalData: { imdbId: imdbId, title: title, genre: genre, year: +year, poster: poster, director: director,
-              runtime: runtime, description: description}, trailer: this.getEmbedVideo(), copies: copies }
+              runtime: runtime, description: description}, trailer: this.youtubeLinkControl.value, copies: copies }
   }
 
   isMovieValid() : boolean {
@@ -79,6 +75,12 @@ export class MovieFormComponent implements OnInit {
     return this.externalDataForm.get(control).hasError('required')
   }
 
+  resetForms() {
+    this.trailerForm.reset()
+    this.posterForm.reset()
+    this.externalDataForm.reset()
+  }
+
   get posterControl() : AbstractControl {
     return this.posterForm.get('poster')
   }
@@ -95,16 +97,11 @@ export class MovieFormComponent implements OnInit {
     return this.externalDataForm.get('copies')
   }
 
-  private getEmbedVideo() : string {
-    const youtubeLink: string = this.youtubeLinkControl.value || ''
-    const matched = youtubeLink.match(this.linkRegex)
-    return matched ? `https://www.youtube.com/embed/${matched[1]}` : ''
-  }
+  get escapedTrailer() : SafeResourceUrl | null {
+    if (this.youtubeLinkControl.value)
+      return this.sanitizer.bypassSecurityTrustResourceUrl(this.youtubeLinkControl.value)
 
-  resetForms() {
-    this.trailerForm.reset()
-    this.posterForm.reset()
-    this.externalDataForm.reset()
+    return null
   }
 
   private initForms() {
@@ -112,8 +109,9 @@ export class MovieFormComponent implements OnInit {
       poster: ['', Validators.required]
     })
 
+    const trailerRegex = /^https:\/\/www\.youtube\.com\/embed\/.*$/
     this.trailerForm = this.formBuilder.group({
-      youtubeLink: ['', [Validators.required, Validators.pattern(this.linkRegex)]]
+      youtubeLink: ['', [Validators.required, Validators.pattern(trailerRegex)]]
     })
 
     const currentYear = new Date().getFullYear()

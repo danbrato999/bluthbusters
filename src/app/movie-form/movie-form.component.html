@@ -24,18 +24,11 @@
             <form [formGroup]="trailerForm">
                 <ng-template matStepLabel>Trailer</ng-template>
                 <div class="external-data-form">
-                    <div class="trailer-container" *ngIf="escapedTrailer()">
-                        <iframe [src]="escapedTrailer()" frameborder="0" allowfullscreen></iframe>
+                    <div class="trailer-container" *ngIf="escapedTrailer">
+                        <iframe [src]="escapedTrailer" frameborder="0" allowfullscreen></iframe>
                     </div>
-                    <mat-form-field>
-                        <input matInput placeholder="Youtube Link" type="text" formControlName="youtubeLink">
-                        <mat-error *ngIf="youtubeLinkControl.hasError('required')">
-                            This field is required
-                        </mat-error>
-                        <mat-error *ngIf="youtubeLinkControl.hasError('pattern') && !youtubeLinkControl.hasError('required')">
-                            Must be a valid youtube video link
-                        </mat-error>
-                    </mat-form-field>
+                    <app-trailer-autocomplete (trailerSelected)="selectTrailer($event)"
+                        (reset)="trailerForm.reset()"></app-trailer-autocomplete>
                     <div>
                         <button mat-raised-button color="primary" matStepperNext [disabled]="!trailerForm.valid">Next</button>
                     </div>

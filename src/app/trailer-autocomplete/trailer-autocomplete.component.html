@@ -1,0 +1,15 @@
+<mat-form-field class="trailer-autocomplete">
+    <input matInput placeholder="Search on YouTube" aria-label="TrailerTitle" type="search" [matAutocomplete]="auto" [formControl]="searchForm">
+    <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="clearForm()">
+        <mat-icon>close</mat-icon>
+    </button>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayTrailerInput" (optionSelected)="selectOption($event.option.value)">
+        <mat-option *ngIf="loading" class="is-loading">Loading...</mat-option>
+        <ng-container *ngIf="!loading">
+            <mat-option *ngFor="let trailer of foundTrailers" [value]="trailer">
+                <img class="trailer-thumbnail" aria-hidden [src]="trailer.thumbnail" height="30">
+                <span>{{ trailer.title }}</span>
+            </mat-option>
+        </ng-container>
+    </mat-autocomplete>
+</mat-form-field>

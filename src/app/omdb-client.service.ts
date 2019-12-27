@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 
-import { MovieDataSearch, MovieData } from './models';
+import { MovieData } from './models';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, flatMap } from 'rxjs/operators';
 

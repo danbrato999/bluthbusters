@@ -56,3 +56,9 @@ export interface MovieDataSearch {
 export interface IdObject {
     id: string
 }
+
+export interface TrailerData {
+    id: string
+    title: string
+    thumbnail: string
+}

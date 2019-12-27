@@ -42,6 +42,7 @@ import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { RentalReturnComponent } from './rental-return/rental-return.component';
 import { MovieDataAutocompleteComponent } from './movie-data-autocomplete/movie-data-autocomplete.component';
+import { TrailerAutocompleteComponent } from './trailer-autocomplete/trailer-autocomplete.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { MovieDataAutocompleteComponent } from './movie-data-autocomplete/movie-
     BbTopbarComponent,
     ConfirmationDialogComponent,
     RentalReturnComponent,
-    MovieDataAutocompleteComponent
+    MovieDataAutocompleteComponent,
+    TrailerAutocompleteComponent
   ],
   imports: [
     BrowserModule,
