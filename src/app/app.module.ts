@@ -21,6 +21,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -40,6 +41,7 @@ import { BbTopbarComponent } from './bb-topbar/bb-topbar.component';
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { RentalReturnComponent } from './rental-return/rental-return.component';
+import { MovieDataAutocompleteComponent } from './movie-data-autocomplete/movie-data-autocomplete.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,8 @@ import { RentalReturnComponent } from './rental-return/rental-return.component';
     LoginComponent,
     BbTopbarComponent,
     ConfirmationDialogComponent,
-    RentalReturnComponent
+    RentalReturnComponent,
+    MovieDataAutocompleteComponent
   ],
   imports: [
     BrowserModule,
@@ -79,6 +82,7 @@ import { RentalReturnComponent } from './rental-return/rental-return.component';
     MatPaginatorModule,
     MatSnackBarModule,
     MatBadgeModule,
+    MatAutocompleteModule,
     AngularFireModule.initializeApp(environment.firebase),
     NgxAuthFirebaseUIModule.forRoot(environment.firebase),
     AngularFireAuthModule,

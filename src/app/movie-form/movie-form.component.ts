@@ -1,8 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MovieDataSearch, MovieFormApi, Movie } from '../models';
+import { MovieFormApi, Movie, MovieData } from '../models';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { OmdbClientService } from '../omdb-client.service';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -13,7 +12,6 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class MovieFormComponent implements OnInit {
   // Form data
-  searchForm: FormGroup
   posterForm: FormGroup
   trailerForm: FormGroup
   externalDataForm: FormGroup
@@ -21,47 +19,17 @@ export class MovieFormComponent implements OnInit {
   // Component visual data
   searchTypes: Array<Object>
   linkRegex: RegExp
-  loading: boolean
-  errorMessage: string
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Movie,
     private dialogRef: MatDialogRef<MovieFormComponent>,
     private sanitizer: DomSanitizer,
-    private omdbClient: OmdbClientService,
     private formBuilder: FormBuilder
   ) { }
 
   ngOnInit() {
     this.linkRegex = /watch\?v=(.*)$/
-    this.searchTypes = [{type: "byName", text: "Title"}, {type: "byImdbId", text: "IMDb id"}]
-    this.loading = false
-
-    this.searchForm = this.formBuilder.group({
-      type: ['byName', Validators.required],
-      value: ['', Validators.required]
-    })
-
-    this.posterForm = this.formBuilder.group({
-      poster: ['', Validators.required]
-    })
-
-    this.trailerForm = this.formBuilder.group({
-      youtubeLink: ['', [Validators.required, Validators.pattern(this.linkRegex)]]
-    })
-
-    const currentYear = new Date().getFullYear()
-    this.externalDataForm = this.formBuilder.group({
-      imdbId: ['', Validators.required],
-      title: ['', Validators.required],
-      genre: ['', Validators.required],
-      year: ['', [Validators.required, Validators.min(1888), Validators.max(currentYear)]],
-      director: ['', Validators.required],
-      runtime: ['', Validators.required],
-      poster: ['', Validators.required],
-      description: ['', Validators.required],
-      copies: ['', [Validators.required, Validators.min(1)]]
-    })
+    this.initForms()
 
     if (this.data) {
       this.externalDataForm.patchValue(this.data.externalData)
@@ -72,19 +40,10 @@ export class MovieFormComponent implements OnInit {
     }
   }
 
-  searchMovieFromExternalSource(search: MovieDataSearch) {
-    this.loading = true
+  selectMovie(movie: MovieData) {
     this.resetForms()
-    this.omdbClient.searchExternalMovieData(search)
-        .subscribe(response => {
-          const externalData = { ... response }
-          this.posterForm.patchValue(externalData)
-          this.externalDataForm.patchValue(externalData)
-          this.loading = false
-        }, error => {
-          this.errorMessage = error
-          this.loading = false
-        })
+    this.posterForm.patchValue(movie)
+    this.externalDataForm.patchValue(movie)
   }
 
   escapedTrailer() : SafeResourceUrl {
@@ -142,16 +101,32 @@ export class MovieFormComponent implements OnInit {
     return matched ? `https://www.youtube.com/embed/${matched[1]}` : ''
   }
 
-  private resetForms() {
-    this.errorMessage = ''
-
-    if (this.trailerForm.touched)
-      this.trailerForm.reset()
-
-    if (this.posterForm.touched)
+  resetForms() {
+    this.trailerForm.reset()
     this.posterForm.reset()
+    this.externalDataForm.reset()
+  }
 
-    if (this.externalDataForm.touched)
-      this.externalDataForm.reset()
+  private initForms() {
+    this.posterForm = this.formBuilder.group({
+      poster: ['', Validators.required]
+    })
+
+    this.trailerForm = this.formBuilder.group({
+      youtubeLink: ['', [Validators.required, Validators.pattern(this.linkRegex)]]
+    })
+
+    const currentYear = new Date().getFullYear()
+    this.externalDataForm = this.formBuilder.group({
+      imdbId: ['', Validators.required],
+      title: ['', Validators.required],
+      genre: ['', Validators.required],
+      year: ['', [Validators.required, Validators.min(1888), Validators.max(currentYear)]],
+      director: ['', Validators.required],
+      runtime: ['', Validators.required],
+      poster: ['', Validators.required],
+      description: ['', Validators.required],
+      copies: ['', [Validators.required, Validators.min(1)]]
+    })
   }
 }

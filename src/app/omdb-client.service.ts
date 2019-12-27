@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { AngularFireAuth } from '@angular/fire/auth';
 
 import { MovieDataSearch, MovieData } from './models';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { catchError, flatMap } from 'rxjs/operators';
 
 @Injectable({
@@ -16,10 +16,14 @@ export class OmdbClientService {
     private afAuth: AngularFireAuth
   ) {}
 
-  searchExternalMovieData(search: MovieDataSearch) : Observable<MovieData> {
+  searchMovieByTitle(title: string) : Observable<MovieData> {
+    if (title === null || title === '')
+      return of(null)
+
+    const body = { type: 'byName', value: title }
     return this.afAuth.idToken.pipe(
       flatMap(token =>
-        this.httpClient.post<MovieData>('/api/external/omdb/search', search,
+        this.httpClient.post<MovieData>('/api/external/omdb/search', body,
           { headers: new HttpHeaders({'Authorization': `Bearer ${token}`}) })
         .pipe(catchError(this.handleNotFound))
       )
