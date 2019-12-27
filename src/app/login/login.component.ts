@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.sass']
 })
 export class LoginComponent implements OnInit {
-  private providersEnabled: Array<AuthProvider> = [AuthProvider.Google]
-  private providersTheme: Theme = Theme.MINI_FAB
+  providersEnabled: Array<AuthProvider> = [AuthProvider.Google]
+  providersTheme: Theme = Theme.MINI_FAB
 
   constructor(
     private router: Router

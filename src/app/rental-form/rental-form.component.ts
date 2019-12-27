@@ -16,7 +16,7 @@ export class RentalFormComponent implements OnInit {
 
   @Output() onRent = new EventEmitter<MovieRentForm>()
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: MovieData,
+    @Inject(MAT_DIALOG_DATA) public data: MovieData,
     private dialogRef: MatDialogRef<RentalFormComponent>
   ) { }
 

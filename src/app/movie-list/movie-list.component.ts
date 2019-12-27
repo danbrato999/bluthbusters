@@ -15,13 +15,13 @@ import { debounceTime, tap, switchMap } from 'rxjs/operators';
   styleUrls: ['./movie-list.component.sass']
 })
 export class MovieListComponent implements OnInit {
-  private movieSearchForm: FormControl
-  private movieCount : number
-  private page: number
-  private limit: number
-  private limitOptions: Array<number>
-  private movies: Array<Movie>
-  private loading: boolean
+  movieSearchForm: FormControl
+  movieCount : number
+  page: number
+  limit: number
+  limitOptions: Array<number>
+  movies: Array<Movie>
+  loading: boolean
 
   constructor(
     private moviesService: MoviesService,

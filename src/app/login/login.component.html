@@ -7,7 +7,8 @@
                     <h2>Welcome to BluthBusters</h2>
                     <p>Your number one source for renting physical movies online</p>
                 </div>
-                <ngx-auth-firebaseui [providers]="providersEnabled" [providersTheme]="providersTheme" (onSuccess)="redirect()"></ngx-auth-firebaseui>
+                <ngx-auth-firebaseui [providers]="providersEnabled" [providersTheme]="providersTheme"
+                        [guestEnabled]="false" (onSuccess)="redirect()"></ngx-auth-firebaseui>
             </div>
         </div>
     </div>

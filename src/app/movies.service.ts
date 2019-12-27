@@ -10,14 +10,11 @@ import { PaginatedList, Movie, MovieFormApi, IdObject } from './models';
   providedIn: 'root'
 })
 export class MoviesService {
-  private apiUrl: string
 
   constructor(
     private httpClient: HttpClient,
     private afAuth: AngularFireAuth
-  ) {
-    this.apiUrl = "http://localhost:9900"
-  }
+  ) {}
 
   getAvailableMovies(page: number, limit: number, name?:string) : Observable<HttpResponse<PaginatedList<Movie>>> {
     const paginationParams = new HttpParams()
@@ -26,21 +23,22 @@ export class MoviesService {
 
     return this.afAuth.idToken.pipe(
       flatMap(token =>
-        this.httpClient.get<PaginatedList<Movie>>(`${this.apiUrl}/movies`,
+        this.httpClient.get<PaginatedList<Movie>>('/api/movies',
           {
             params: name ? paginationParams.set("name", name) : paginationParams,
             headers: new HttpHeaders({'Authorization': `Bearer ${token}`}),
             observe: 'response'
           }
         )
-      )
+      ),
+      catchError(this.handleUnexpected)
     )
   }
 
   getMovieById(id: string) : Observable<HttpResponse<Movie>> {
     return this.afAuth.idToken.pipe(
       flatMap(token =>
-        this.httpClient.get<Movie>(`${this.apiUrl}/movies/${id}`,
+        this.httpClient.get<Movie>(`/api/movies/${id}`,
           {
             headers: new HttpHeaders({'Authorization': `Bearer ${token}`}),
             observe: 'response'
@@ -53,7 +51,7 @@ export class MoviesService {
   addMovie(movieForm: MovieFormApi) : Observable<IdObject> {
     return this.afAuth.idToken.pipe(
       flatMap(token =>
-        this.httpClient.post<IdObject>(`${this.apiUrl}/movies`, movieForm,
+        this.httpClient.post<IdObject>('/api/movies', movieForm,
           { headers: new HttpHeaders({'Authorization': `Bearer ${token}`})}
         ).pipe(catchError(this.handleUnexpected))
       )
@@ -63,7 +61,7 @@ export class MoviesService {
   updateMovie(id: string, movieForm: MovieFormApi) : Observable<Movie> {
     return this.afAuth.idToken.pipe(
       flatMap(token =>
-        this.httpClient.put<Movie>(`${this.apiUrl}/movies/${id}`, movieForm,
+        this.httpClient.put<Movie>(`/api/movies/${id}`, movieForm,
           { headers: new HttpHeaders({'Authorization': `Bearer ${token}`})}
         ).pipe(catchError(this.handleNotFound))
       )

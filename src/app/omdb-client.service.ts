@@ -10,19 +10,16 @@ import { catchError, flatMap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class OmdbClientService {
-  private apiUrl: string
 
   constructor(
     private httpClient: HttpClient,
     private afAuth: AngularFireAuth
-  ) {
-    this.apiUrl = "http://localhost:9900"
-  }
+  ) {}
 
   searchExternalMovieData(search: MovieDataSearch) : Observable<MovieData> {
     return this.afAuth.idToken.pipe(
       flatMap(token =>
-        this.httpClient.post<MovieData>(`${this.apiUrl}/external/omdb/search`, search,
+        this.httpClient.post<MovieData>('/api/external/omdb/search', search,
           { headers: new HttpHeaders({'Authorization': `Bearer ${token}`}) })
         .pipe(catchError(this.handleNotFound))
       )

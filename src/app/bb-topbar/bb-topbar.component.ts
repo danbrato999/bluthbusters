@@ -9,10 +9,10 @@ import { MovieRentalsService } from '../movie-rentals.service';
   styleUrls: ['./bb-topbar.component.sass']
 })
 export class BbTopbarComponent implements OnInit {
-  private pendingRentalsCount: number | null
+  pendingRentalsCount: number | null
 
   constructor(
-    private afAuth: AngularFireAuth,
+    public afAuth: AngularFireAuth,
     private router: Router,
     private rentalsService: MovieRentalsService
   ) { 
