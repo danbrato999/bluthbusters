@@ -1,7 +1,7 @@
 <div class="movie-details">
-    <div fxLayout.lt-md="column" fxLayout.gt-sm="row-reverse" fxLayoutGap="20px">
+    <div fxLayout.lt-md="column" fxLayout.gt-sm="row-reverse">
         <div fxFlex></div>
-        <div fxFlex="70">
+        <div fxFlex="80">
             <mat-card *ngIf="movie">
                 <mat-card-header>
                     <img mat-card-avatar [src]="movie.externalData.poster">
@@ -9,8 +9,8 @@
                         <mat-card-title>{{ movie.externalData.title }}</mat-card-title>
                         <mat-card-subtitle>Copies available: {{ movie.inventory.available }}</mat-card-subtitle>
                     </mat-card-title-group>
-                    <div fxFlex></div>
-                    <div class="rent-movie-actions" *ngIf="canRentMovie()">
+                    <div class="title-empty-space" fxFlex></div>
+                    <div class="rent-movie-actions" *ngIf="canRentMovie">
                         <button mat-raised-button color="accent" (click)="openRentMovieForm()">Rent now</button>
                     </div>
                     <app-rental-return *ngIf="movieRentDetails" [details]="movieRentDetails"></app-rental-return>
@@ -41,7 +41,7 @@
                 </mat-card-content>
                 <mat-card-actions align="end">
                     <a mat-button [routerLink]="['/']">Back</a>
-                    <button mat-button (click)="openMovieDialog()" color="warn">Edit</button>
+                    <button mat-button [routerLink]="['/movies', movie.id, 'edit']" color="warn">Edit</button>
                 </mat-card-actions>
             </mat-card>
         </div>

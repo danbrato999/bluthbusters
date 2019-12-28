@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { PageEvent, MatSnackBar } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { MovieFormComponent } from '../movie-form/movie-form.component';
 
 import { MoviesService } from '../movies.service';
 import { Movie } from '../models';
@@ -25,8 +22,6 @@ export class MovieListComponent implements OnInit {
 
   constructor(
     private moviesService: MoviesService,
-    private dialog: MatDialog,
-    private router: Router,
     private snackBar: MatSnackBar
   ) {
     this.movieSearchForm = new FormControl()
@@ -55,20 +50,6 @@ export class MovieListComponent implements OnInit {
             this.movieCount = totalCount
             this.movies = data
           }, error => this.showApiError(error))
-  }
-
-  openForm() {
-    const dialogRef = this.dialog.open(MovieFormComponent, {
-      width: '650px'
-    })
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.moviesService.addMovie(result).subscribe(newId => {
-          this.router.navigate(['movies', newId.id])
-        }, error => this.showApiError(error))
-      }
-    })
   }
 
   changePage(event: PageEvent) {

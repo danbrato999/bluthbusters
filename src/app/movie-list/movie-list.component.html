@@ -6,7 +6,7 @@
         <div class="no-movies-available mat-app-background bb-rounded" *ngIf="movieCount < 1; else movieList">
             <h3>Ups, we're empty now</h3>
             <p>There seems to be no movies available for rent now. If you want to, go ahead and add a new movie for rent</p>
-            <button mat-raised-button color="accent" (click)="openForm()">Add movie</button>
+            <a mat-raised-button color="accent" [routerLink]="['/movies', 'add']">Add movie</a>
         </div>
         <ng-template #movieList>
             <div class="movie-actions bb-rounded" fxLayout="row" fxLayoutGap="10px">
@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="movie-buttons" fxFlex>
-                    <button mat-icon-button color="accent" aria-label="Add movie" (click)="openForm()">
+                    <button mat-icon-button color="accent" aria-label="Add movie" [routerLink]="['/movies', 'add']">
                         <mat-icon>library_add</mat-icon>
                       </button>
                 </div>

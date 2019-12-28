@@ -92,6 +92,6 @@ import { TrailerAutocompleteComponent } from './trailer-autocomplete/trailer-aut
   ],
   providers: [AngularFireAuthGuard],
   bootstrap: [AppComponent],
-  entryComponents: [MovieFormComponent, RentalFormComponent, ConfirmationDialogComponent]
+  entryComponents: [RentalFormComponent, ConfirmationDialogComponent]
 })
 export class AppModule { }

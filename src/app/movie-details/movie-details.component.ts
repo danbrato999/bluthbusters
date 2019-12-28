@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MovieFormComponent } from '../movie-form/movie-form.component';
 
 import { MoviesService } from '../movies.service';
 import { MovieRentalsService } from '../movie-rentals.service';
@@ -34,7 +33,7 @@ export class MovieDetailsComponent implements OnInit {
       const movieId = params.get("movieId")
       this.moviesService.getMovieById(movieId)
           .subscribe(response => {
-            this.movie = { ... response.body }
+            this.movie = response
           }, error => this.showApiError(error))
       
       this.rentalService.getCurrentRentingDetails(movieId)
@@ -49,22 +48,9 @@ export class MovieDetailsComponent implements OnInit {
     return this.movie.trailer ? this.sanitizer.bypassSecurityTrustResourceUrl(this.movie.trailer) : ""
   }
 
-  canRentMovie() : Boolean {
+  get canRentMovie() : Boolean {
     return this.movie.inventory.available > 0 
             && !this.movieRentDetails
-  }
-
-  openMovieDialog() {
-    const dialogRef = this.dialog.open(MovieFormComponent, {
-      width: '650px', data: this.movie
-    })
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result)
-        this.moviesService.updateMovie(this.movie.id, result).subscribe(response => {
-          this.movie = response
-        }, error => this.showApiError(error))
-    })
   }
 
   openRentMovieForm() {

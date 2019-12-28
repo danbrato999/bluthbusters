@@ -1,8 +1,7 @@
 <div class="rental-history">
     <div fxLayout="row">
-        <div fxFlex="10"></div>
-        <div fxFlex="80">
-            <div class="bb-rounded mat-app-background" fxLayout="column" fxLayoutGap="15px">
+        <div fxFlex.lt-md="100" fxFlex.gt-sm="80" fxFlexOffset.gt-sm="10%">
+            <div class="mat-app-background" fxLayout="column" fxLayoutGap="15px" ngClass.gt-sm="bb-rounded">
                 <ng-container *ngIf="rentals && rentals.length; else noHistory">
                     <div *ngFor="let rental of rentals" class="rental-entry">
                         <div fxLayout="row" fxFlexFill>
@@ -36,6 +35,5 @@
                 </ng-template>
             </div>
         </div>
-        <div fxFlex></div>
     </div>
 </div>

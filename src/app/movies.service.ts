@@ -35,13 +35,12 @@ export class MoviesService {
     )
   }
 
-  getMovieById(id: string) : Observable<HttpResponse<Movie>> {
+  getMovieById(id: string) : Observable<Movie> {
     return this.afAuth.idToken.pipe(
       flatMap(token =>
         this.httpClient.get<Movie>(`/api/movies/${id}`,
           {
-            headers: new HttpHeaders({'Authorization': `Bearer ${token}`}),
-            observe: 'response'
+            headers: new HttpHeaders({'Authorization': `Bearer ${token}`})
           }
         ).pipe(catchError(this.handleNotFound))
       )

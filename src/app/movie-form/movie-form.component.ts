@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { MovieFormApi, Movie, MovieData, TrailerData } from '../models';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MoviesService } from '../movies.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-movie-form',
@@ -11,31 +12,42 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./movie-form.component.sass']
 })
 export class MovieFormComponent implements OnInit {
+  //Movie data
+  movieId: string | null
+
   // Form data
   posterForm: FormGroup
   trailerForm: FormGroup
   externalDataForm: FormGroup
 
   // Component visual data
+  loading: boolean
   searchTypes: Array<Object>
   trailerUrl: SafeResourceUrl
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: Movie,
-    private dialogRef: MatDialogRef<MovieFormComponent>,
+    private route: ActivatedRoute,
+    private router: Router,
     private sanitizer: DomSanitizer,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private moviesService: MoviesService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
     this.initForms()
-
-    if (this.data) {
-      this.externalDataForm.patchValue(this.data.externalData)
-      this.externalDataForm.patchValue({copies: this.data.inventory.copies})
-      this.posterForm.patchValue(this.data.externalData)
-      this.trailerForm.patchValue({ youtubeLink: this.data.trailer })
-    }
+    this.route.paramMap.subscribe(params => {
+      if (params.get("movieId")) {
+        this.movieId = params.get("movieId")
+        this.moviesService.getMovieById(this.movieId)
+          .subscribe(response => {
+            this.externalDataForm.patchValue(response.externalData)
+            this.externalDataForm.patchValue({copies: response.inventory.copies})
+            this.posterForm.patchValue(response.externalData)
+            this.trailerForm.patchValue({ youtubeLink: response.trailer })
+          }, error => this.showApiError(error))
+      }
+    })
   }
 
   selectMovie(movie: MovieData) {
@@ -63,14 +75,6 @@ export class MovieFormComponent implements OnInit {
     return this.posterForm.valid && this.trailerForm.valid && this.externalDataForm.valid
   }
 
-  isUpdate() : boolean {
-    return Boolean(this.data)
-  }
-
-  closeDialog() {
-    this.dialogRef.close()
-  }
-
   isDataMissingError(control: string) : boolean {
     return this.externalDataForm.get(control).hasError('required')
   }
@@ -79,6 +83,25 @@ export class MovieFormComponent implements OnInit {
     this.trailerForm.reset()
     this.posterForm.reset()
     this.externalDataForm.reset()
+  }
+
+  submitForms() {
+    const externalData = this.externalDataForm.value
+    const poster = this.posterForm.value.poster
+    const copies = +externalData.copies
+    const { imdbId, title, genre, year, director, runtime, description } = externalData
+
+    const movieForm: MovieFormApi = { externalData: { imdbId: imdbId, title: title, genre: genre, year: +year, poster: poster, director: director,
+      runtime: runtime, description: description}, trailer: this.youtubeLinkControl.value, copies: copies }
+
+    const action = this.isUpdate ? this.moviesService.updateMovie(this.movieId, movieForm) : 
+                    this.moviesService.addMovie(movieForm)
+    
+    action.subscribe(result => this.router.navigate(['/movies', result.id]), this.showApiError)
+  }
+
+  get isUpdate() : boolean {
+    return Boolean(this.movieId)
   }
 
   get posterControl() : AbstractControl {
@@ -95,6 +118,10 @@ export class MovieFormComponent implements OnInit {
 
   get copiesControl() : AbstractControl {
     return this.externalDataForm.get('copies')
+  }
+
+  get title() : string {
+    return this.externalDataForm.get('title').value
   }
 
   get escapedTrailer() : SafeResourceUrl | null {
@@ -126,5 +153,9 @@ export class MovieFormComponent implements OnInit {
       description: ['', Validators.required],
       copies: ['', [Validators.required, Validators.min(1)]]
     })
+  }
+
+  private showApiError(error: string) {
+    this.snackBar.open(error, 'Dismiss', { duration: 5000 })
   }
 }
