@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { PageEvent, MatSnackBar } from '@angular/material';
+import { PageEvent } from '@angular/material';
 import { FormControl } from '@angular/forms';
 
 import { MoviesService } from '../movies.service';
 import { Movie } from '../models';
 import { debounceTime, tap, switchMap } from 'rxjs/operators';
+import { NotificationsService } from '../notifications.service';
 
 @Component({
   selector: 'app-movie-list',
@@ -22,7 +23,7 @@ export class MovieListComponent implements OnInit {
 
   constructor(
     private moviesService: MoviesService,
-    private snackBar: MatSnackBar
+    private notificationsService: NotificationsService
   ) {
     this.movieSearchForm = new FormControl()
     this.movieCount = 0
@@ -49,7 +50,7 @@ export class MovieListComponent implements OnInit {
             const { totalCount, data }  = { ... result.body }
             this.movieCount = totalCount
             this.movies = data
-          }, error => this.showApiError(error))
+          }, error => this.notificationsService.showApiError(error))
   }
 
   changePage(event: PageEvent) {
@@ -66,10 +67,6 @@ export class MovieListComponent implements OnInit {
           const { totalCount, data }  = { ... result.body }
           this.movieCount = totalCount
           this.movies = data
-        }, error => this.showApiError(error))
-  }
-
-  private showApiError(error: string) {
-    this.snackBar.open(error, 'Dismiss', { duration: 5000 })
+        }, error => this.notificationsService.showApiError(error))
   }
 }

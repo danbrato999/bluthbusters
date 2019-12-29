@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { MoviesService } from '../movies.service';
 import { MovieRentalsService } from '../movie-rentals.service';
 import { Movie, MovieRenting } from '../models';
 import { RentalFormComponent } from '../rental-form/rental-form.component';
+import { NotificationsService } from '../notifications.service';
 
 @Component({
   selector: 'app-movie-details',
@@ -25,7 +25,7 @@ export class MovieDetailsComponent implements OnInit {
     private rentalService: MovieRentalsService,
     private dialog: MatDialog,
     private sanitizer: DomSanitizer,
-    private snackBar: MatSnackBar
+    private notificationsService: NotificationsService
   ) { }
 
   ngOnInit() {
@@ -34,13 +34,13 @@ export class MovieDetailsComponent implements OnInit {
       this.moviesService.getMovieById(movieId)
           .subscribe(response => {
             this.movie = response
-          }, error => this.showApiError(error))
+          }, error => this.notificationsService.showApiError(error))
       
       this.rentalService.getCurrentRentingDetails(movieId)
           .subscribe(response => {
             if (response.status === 200)
               this.movieRentDetails = { ... response.body }
-          }, error => this.showApiError(error))
+          }, error => this.notificationsService.showApiError(error))
     })
   }
 
@@ -62,11 +62,8 @@ export class MovieDetailsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result)
         this.rentalService.rentMovie(this.movie.id, result)
-            .subscribe(() => this.router.navigate(['rental-history']), error => this.showApiError(error))
+            .subscribe(() => this.router.navigate(['rental-history']),
+              error => this.notificationsService.showApiError(error))
     })
-  }
-
-  private showApiError(error: string) {
-    this.snackBar.open(error, 'Dismiss', { duration: 5000 })
   }
 }

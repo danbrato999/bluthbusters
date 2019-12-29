@@ -1,10 +1,10 @@
 <mat-form-field class="movie-data-autocomplete">
-    <input matInput placeholder="Movie title" aria-label="MovieTitle" type="search" [matAutocomplete]="auto" [formControl]="searchForm">
+    <input matInput [placeholder]="'movie_title' | translate" aria-label="Movie Title" type="search" [matAutocomplete]="auto" [formControl]="searchForm">
     <button mat-button *ngIf="searchValue" matSuffix mat-icon-button aria-label="Clear" (click)="clearForm()">
         <mat-icon>close</mat-icon>
     </button>
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayMovieInput" (optionSelected)="selectOption($event.option.value)">
-        <mat-option *ngIf="loading" class="is-loading">Loading...</mat-option>
+        <mat-option *ngIf="loading" class="is-loading">{{ 'loading' | translate }}</mat-option>
         <ng-container *ngIf="!loading">
             <mat-option *ngFor="let movie of foundMovies" [value]="movie">
                 <img class="mda-poster" aria-hidden [src]="movie.poster" height="30">

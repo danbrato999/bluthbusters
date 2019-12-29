@@ -1,10 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MovieFormApi, Movie, MovieData, TrailerData } from '../models';
+import { Component, OnInit } from '@angular/core';
+import { MovieFormApi, MovieData, TrailerData } from '../models';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MoviesService } from '../movies.service';
-import { MatSnackBar } from '@angular/material';
+import { NotificationsService } from '../notifications.service';
 
 @Component({
   selector: 'app-movie-form',
@@ -31,7 +31,7 @@ export class MovieFormComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private formBuilder: FormBuilder,
     private moviesService: MoviesService,
-    private snackBar: MatSnackBar
+    private notificationsService: NotificationsService
   ) { }
 
   ngOnInit() {
@@ -45,7 +45,7 @@ export class MovieFormComponent implements OnInit {
             this.externalDataForm.patchValue({copies: response.inventory.copies})
             this.posterForm.patchValue(response.externalData)
             this.trailerForm.patchValue({ youtubeLink: response.trailer })
-          }, error => this.showApiError(error))
+          }, error => this.notificationsService.showApiError(error))
       }
     })
   }
@@ -97,7 +97,8 @@ export class MovieFormComponent implements OnInit {
     const action = this.isUpdate ? this.moviesService.updateMovie(this.movieId, movieForm) : 
                     this.moviesService.addMovie(movieForm)
     
-    action.subscribe(result => this.router.navigate(['/movies', result.id]), this.showApiError)
+    action.subscribe(result => this.router.navigate(['/movies', result.id]),
+      error => this.notificationsService.showApiError(error))
   }
 
   get isUpdate() : boolean {
@@ -153,9 +154,5 @@ export class MovieFormComponent implements OnInit {
       description: ['', Validators.required],
       copies: ['', [Validators.required, Validators.min(1)]]
     })
-  }
-
-  private showApiError(error: string) {
-    this.snackBar.open(error, 'Dismiss', { duration: 5000 })
   }
 }

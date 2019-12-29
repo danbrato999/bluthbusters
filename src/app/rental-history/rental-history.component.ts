@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
 
 import { MovieRentalsService } from '../movie-rentals.service';
 import { DetailedMovieRenting } from '../models';
+import { NotificationsService } from '../notifications.service';
+import { BbTranslatorService } from '../bb-translator.service';
 
 @Component({
   selector: 'app-rental-history',
@@ -14,7 +15,8 @@ export class RentalHistoryComponent implements OnInit {
 
   constructor(
     private rentalService: MovieRentalsService,
-    private snackBar: MatSnackBar
+    private notificationsService: NotificationsService,
+    private bbTranslator: BbTranslatorService
   ) { }
 
   ngOnInit() {
@@ -27,6 +29,10 @@ export class RentalHistoryComponent implements OnInit {
     this.rentalService.returnMovie(renting.movieId).subscribe(response => {
       const rentingIndex = this.rentals.findIndex( r => r.id == renting.id)
       this.rentals[rentingIndex].returnedAt = response
-    }, error => this.snackBar.open(error, 'Dismiss', { duration: 3000 }))
+    }, error => this.notificationsService.showApiError(error))
+  }
+
+  get locale() : string {
+    return this.bbTranslator.currentLanguage
   }
 }

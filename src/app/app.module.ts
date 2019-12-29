@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,14 +18,19 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatMenuModule } from '@angular/material/menu';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { CookieService } from 'ngx-cookie-service';
+import localeEs from '@angular/common/locales/es';
 import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -43,6 +48,8 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 import { RentalReturnComponent } from './rental-return/rental-return.component';
 import { MovieDataAutocompleteComponent } from './movie-data-autocomplete/movie-data-autocomplete.component';
 import { TrailerAutocompleteComponent } from './trailer-autocomplete/trailer-autocomplete.component';
+import { PaginatorIntlService } from './paginator-intl.service';
+import { registerLocaleData } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -85,13 +92,32 @@ import { TrailerAutocompleteComponent } from './trailer-autocomplete/trailer-aut
     MatSnackBarModule,
     MatBadgeModule,
     MatAutocompleteModule,
+    MatMenuModule,
     AngularFireModule.initializeApp(environment.firebase),
     NgxAuthFirebaseUIModule.forRoot(environment.firebase),
     AngularFireAuthModule,
     FlexLayoutModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
-  providers: [AngularFireAuthGuard],
+  providers: [AngularFireAuthGuard, CookieService, 
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlService, deps: [TranslateService] }
+  ],
   bootstrap: [AppComponent],
   entryComponents: [RentalFormComponent, ConfirmationDialogComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+    registerLocaleData(localeEs)
+  }
+}
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}

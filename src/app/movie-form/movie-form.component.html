@@ -1,32 +1,34 @@
 <div fxLayout="row" class="movie-form-container">
     <div fxFlex.lt-md="100" fxFlex.gt-sm="80" fxFlexOffset.gt-sm="10%" class="mat-app-background" ngClass.gt-sm="bb-rounded">
         <div class="movie-form-title">
-            <h2>{{ isUpdate ? 'Update ' + title : 'Add new movie' }}</h2>
+            <h2>{{ (isUpdate ? 'movie_form.update_title' : 'movie_form.add_title') | translate:{ value: title } }}</h2>
         </div>
         
         <mat-vertical-stepper class="bb-rounded" [linear]="!isUpdate" #stepper>
             <mat-step [stepControl]="posterForm">
                 <form [formGroup]="posterForm">
-                    <ng-template matStepLabel>Movie poster</ng-template>
+                    <ng-template matStepLabel>{{ 'movie_form.poster_title' | translate }}</ng-template>
                     <app-movie-data-autocomplete *ngIf="!isUpdate" (movieSelected)="selectMovie($event)"
                         (reset)="resetForms()"></app-movie-data-autocomplete>
                     <div class="external-data-form poster-form">
                         <img *ngIf="posterControl.value" [src]="posterControl.value">
                         <mat-form-field>
-                            <input matInput placeholder="Poster" type="text" formControlName="poster" required>
-                            <mat-error *ngIf="posterControl.hasError('required')">
-                                This field is required
+                            <input matInput [placeholder]="'movie.poster' | translate" type="text" formControlName="poster" required>
+                            <mat-error *ngIf="posterControl.hasError('required')" translate>
+                                validations.required
                             </mat-error>
                         </mat-form-field>
                         <div>
-                            <button mat-raised-button color="primary" matStepperNext [disabled]="!posterForm.valid">Next</button>
+                            <button mat-raised-button color="primary" matStepperNext [disabled]="!posterForm.valid">
+                                {{ 'movie_form.next' | translate }}
+                            </button>
                         </div>
                     </div>
                 </form>
             </mat-step>
             <mat-step [stepControl]="trailerForm">
                 <form [formGroup]="trailerForm">
-                    <ng-template matStepLabel>Trailer</ng-template>
+                    <ng-template matStepLabel>{{ 'movie_form.trailer_title' | translate }}</ng-template>
                     <div class="external-data-form">
                         <div class="trailer-container" *ngIf="escapedTrailer">
                             <iframe [src]="escapedTrailer" frameborder="0" allowfullscreen></iframe>
@@ -34,75 +36,76 @@
                         <app-trailer-autocomplete (trailerSelected)="selectTrailer($event)"
                             (reset)="trailerForm.reset()"></app-trailer-autocomplete>
                         <div>
-                            <button mat-raised-button color="primary" matStepperNext [disabled]="!trailerForm.valid">Next</button>
+                            <button mat-raised-button color="primary" matStepperNext [disabled]="!trailerForm.valid">
+                                {{ 'movie_form.next' | translate }}
+                            </button>
                         </div>
                     </div>
                 </form>
             </mat-step>
             <mat-step [stepControl]="externalDataForm">
                 <form [formGroup]="externalDataForm">
-                    <ng-template matStepLabel>Details</ng-template>
+                    <ng-template matStepLabel>{{ 'movie_form.details_title' | translate }}</ng-template>
                     <div class="external-data-form">
                         <mat-form-field>
                             <input matInput placeholder="imdbId" type="text" formControlName="imdbId" required>
-                            <mat-error *ngIf="isDataMissingError('imdbId')">
-                                This field is required
+                            <mat-error *ngIf="isDataMissingError('imdbId')" translate>
+                                validations.required
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput placeholder="Title" type="text" formControlName="title" required>
-                            <mat-error *ngIf="isDataMissingError('title')">
-                                This field is required
+                            <input matInput [placeholder]="'movie.title' | translate" type="text" formControlName="title" required>
+                            <mat-error *ngIf="isDataMissingError('title')" translate>
+                                validations.required
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput placeholder="Year" type="number" formControlName="year" required>
-                            <mat-error *ngIf="yearControl.hasError('required')">
-                                This field is required
+                            <input matInput [placeholder]="'movie.year' | translate" type="number" formControlName="year" required>
+                            <mat-error *ngIf="yearControl.hasError('required')" translate>
+                                validations.required
                             </mat-error>
-                            <mat-error *ngIf="yearControl.hasError('min') || yearControl.hasError('max')">
-                                Must be a year between 1888 and now
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <input matInput placeholder="Director" type="text" formControlName="director" required>
-                            <mat-error *ngIf="isDataMissingError('director')">
-                                This field is required
+                            <mat-error *ngIf="yearControl.hasError('min') || yearControl.hasError('max')" translate>
+                                validations.movie_year
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput placeholder="Genre" type="text" formControlName="genre" required>
-                            <mat-error *ngIf="isDataMissingError('genre')">
-                                This field is required
+                            <input matInput [placeholder]="'movie.director' | translate" type="text" formControlName="director" required>
+                            <mat-error *ngIf="isDataMissingError('director')" translate>
+                                validations.required
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput placeholder="Runtime" type="text" formControlName="runtime" required>
-                            <mat-error *ngIf="isDataMissingError('runtime')">
-                                This field is required
+                            <input matInput [placeholder]="'movie.genre' | translate" type="text" formControlName="genre" required>
+                            <mat-error *ngIf="isDataMissingError('genre')" translate>
+                                validations.required
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field>
-                            <textarea matInput placeholder="Description" type="text" formControlName="description" required></textarea>
-                            <mat-error *ngIf="isDataMissingError('description')">
-                                This field is required
+                            <input matInput [placeholder]="'movie.duration' | translate" type="text" formControlName="runtime" required>
+                            <mat-error *ngIf="isDataMissingError('runtime')" translate>
+                                validations.required
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput placeholder="Copies" type="number" formControlName="copies" required>
-                            <mat-error *ngIf="copiesControl.hasError('required')">
-                                Numeric value required
+                            <textarea matInput [placeholder]="'movie.plot' | translate" type="text" formControlName="description" required></textarea>
+                            <mat-error *ngIf="isDataMissingError('description')" translate>
+                                validations.required
                             </mat-error>
-                            <mat-error *ngIf="copiesControl.hasError('min')">
-                                Must be greater than 0
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input matInput [placeholder]="'movie.copies' | translate" type="number" formControlName="copies" required>
+                            <mat-error *ngIf="copiesControl.hasError('required')" translate>
+                                validations.required
+                            </mat-error>
+                            <mat-error *ngIf="copiesControl.hasError('min')" translate>
+                                validations.copies
                             </mat-error>
                         </mat-form-field>
                     </div>
                 </form>
                 <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button [disabled]="!isMovieValid()" (click)="submitForms()">
-                        {{ isUpdate ? 'Save' : 'Add' }}
+                    <button mat-raised-button color="primary" [disabled]="!isMovieValid()" (click)="submitForms()">
+                        {{ (isUpdate ? 'movie_form.save' : 'movie_form.add') | translate }}
                     </button>
                 </div>              
             </mat-step>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BbTranslatorService } from './bb-translator.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'bluthbusters';
+
+  constructor(
+    bbTranslator: BbTranslatorService
+  ) {
+    bbTranslator.initTranslator()
+  }
 }

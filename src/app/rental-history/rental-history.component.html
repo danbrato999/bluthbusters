@@ -15,10 +15,10 @@
                                             {{ rental.movie.title }}
                                         </a>
                                     </h2>
-                                    <p matLine><b>Rented at: </b>{{ rental.rentedAt | date:'medium' }}</p>
-                                    <p matLine *ngIf="rental.returnedAt;else deadline"><b>Returned At: </b>{{ rental.returnedAt | date:'medium' }}</p>
+                                    <p matLine><b translate>rental_history.rented_at</b>: {{ rental.rentedAt | date:'medium':undefined:locale }}</p>
+                                    <p matLine *ngIf="rental.returnedAt;else deadline"><b translate>rental_history.returned_at</b>: {{ rental.returnedAt | date:'medium':undefined:locale }}</p>
                                     <ng-template #deadline>
-                                        <p matLine class="deadline-text"><b>Deadline: </b>{{ rental.rentUntil | date }}</p>
+                                        <p matLine class="deadline-text"><b translate>rental_history.deadline</b>: {{ rental.rentUntil | date:'longDate':undefined:locale }}</p>
                                         <app-rental-return [details]="rental" (returnMovie)="returnMovie(rental)"></app-rental-return>
                                     </ng-template>
                                 </div>
@@ -29,8 +29,8 @@
                 </ng-container>
                 <ng-template #noHistory>
                     <div class="no-history">
-                        <h1>You have no movies in your history</h1>
-                        <a mat-button color="primary" [routerLink]="['/']">Rent now</a>
+                        <h1 translate>rental_history.empty_title</h1>
+                        <a mat-button color="primary" [routerLink]="['/']">{{'rental_history.rent_now' | translate}}</a>
                     </div>
                 </ng-template>
             </div>

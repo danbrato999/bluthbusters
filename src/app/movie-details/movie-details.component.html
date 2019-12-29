@@ -7,11 +7,15 @@
                     <img mat-card-avatar [src]="movie.externalData.poster">
                     <mat-card-title-group>
                         <mat-card-title>{{ movie.externalData.title }}</mat-card-title>
-                        <mat-card-subtitle>Copies available: {{ movie.inventory.available }}</mat-card-subtitle>
+                        <mat-card-subtitle translate [translateParams]="{ copies: movie.inventory.available }">
+                            movie_details.available_copies
+                        </mat-card-subtitle>
                     </mat-card-title-group>
                     <div class="title-empty-space" fxFlex></div>
                     <div class="rent-movie-actions" *ngIf="canRentMovie">
-                        <button mat-raised-button color="accent" (click)="openRentMovieForm()">Rent now</button>
+                        <button mat-raised-button color="accent" (click)="openRentMovieForm()">
+                            {{'movie_details.rent_now' | translate}}
+                        </button>
                     </div>
                     <app-rental-return *ngIf="movieRentDetails" [details]="movieRentDetails"></app-rental-return>
                 </mat-card-header>
@@ -29,19 +33,21 @@
                             </div>
                             <div class="trailer-description" fxFlex>
                                 <div class="movie-data">
-                                    <p><b>Director:</b> {{ movie.externalData.director }}</p>
-                                    <p><b>Genre:</b> {{ movie.externalData.genre }}</p>
-                                    <p><b>Year:</b> {{ movie.externalData.year }}</p>
-                                    <p><b>Duration:</b> {{ movie.externalData.runtime }}</p>
-                                    <p><b>Plot:</b> {{ movie.externalData.description }}</p>
+                                    <p><b translate>movie.director</b>: {{ movie.externalData.director }}</p>
+                                    <p><b translate>movie.genre</b>: {{ movie.externalData.genre }}</p>
+                                    <p><b translate>movie.year</b>: {{ movie.externalData.year }}</p>
+                                    <p><b translate>movie.duration</b>: {{ movie.externalData.runtime }}</p>
+                                    <p><b translate>movie.plot</b>: {{ movie.externalData.description }}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </mat-card-content>
                 <mat-card-actions align="end">
-                    <a mat-button [routerLink]="['/']">Back</a>
-                    <button mat-button [routerLink]="['/movies', movie.id, 'edit']" color="warn">Edit</button>
+                    <a mat-button [routerLink]="['/']">{{'movie_details.go_back' | translate}}</a>
+                    <button mat-button [routerLink]="['/movies', movie.id, 'edit']" color="warn">
+                        {{'movie_details.edit' | translate}}
+                    </button>
                 </mat-card-actions>
             </mat-card>
         </div>

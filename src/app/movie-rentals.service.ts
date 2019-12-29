@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { MovieRenting, DetailedMovieRenting, MovieRentForm } from './models';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, flatMap, map, tap } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class MovieRentalsService {
   @Output() movieReturned: EventEmitter<string> = new EventEmitter()
   constructor(
     private httpClient: HttpClient,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private translateService: TranslateService
   ) {}
 
   getUserHistory() : Observable<HttpResponse<Array<DetailedMovieRenting>>> {
@@ -27,7 +29,7 @@ export class MovieRentalsService {
           }
         )
       ),
-      catchError(this.handleUnexpected)
+      catchError(error => this.handleUnexpected(error))
     )
   }
 
@@ -41,7 +43,7 @@ export class MovieRentalsService {
           }
         )
       ),
-      catchError(this.handleUnexpected)
+      catchError(error => this.handleUnexpected(error))
     )
   }
 
@@ -66,7 +68,7 @@ export class MovieRentalsService {
         this.httpClient.post<MovieRenting>(`/api/movie-rentals/${movieId}`, formatedForm,
           { headers: new HttpHeaders({'Authorization': `Bearer ${token}`, 'X-Host-Timezone': this.timezone}) }
         ).pipe(
-          catchError(this.handleRentFailure)
+          catchError(error => this.handleRentFailure(error))
         )
       )
     )
@@ -84,7 +86,7 @@ export class MovieRentalsService {
       ),
       tap(() => this.movieReturned.emit(movieId)),
       map<any, Date>(() => new Date()),
-      catchError(this.handleUnexpected)
+      catchError(error => this.handleUnexpected(error))
     )
   }
 
@@ -96,22 +98,28 @@ export class MovieRentalsService {
 
   private handleUnexpected(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent)
-      console.error('An error occurred:', error.error.message);
+      console.error('An error occurred:', error.error.message)
     else
-      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+      console.error(`Backend returned code ${error.status}, body was: ${error.error}`)
 
-    return throwError('Unexpected error in the app. Please try again later')
+    return this.translateService.get('errors.unexpected_error').pipe(
+      flatMap(message => throwError(message))
+    )
   }
 
   private handleRentFailure(error: HttpErrorResponse) : Observable<never> {
     if (error.status === 400)
-      return throwError("You can't rent this movie. Make sure it has enough copies to rent and you don't have a copy now")
+      return this.translateService.get('errors.cant_rent_movie').pipe(
+        flatMap(message => throwError(message))
+      )
     
     if (error.error instanceof ErrorEvent)
-      console.error('An error occurred:', error.error.message);
+      console.error('An error occurred:', error.error.message)
     else
-      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+      console.error(`Backend returned code ${error.status}, body was: ${error.error}`)
 
-    return throwError('Unexpected error in the app. Please try again later')
+    return this.translateService.get('errors.unexpected_error').pipe(
+      flatMap(message => throwError(message))
+    )
   }
 }

@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable, throwError } from 'rxjs';
 import { catchError, flatMap } from 'rxjs/operators';
 import { PaginatedList, Movie, MovieFormApi, IdObject } from './models';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class MoviesService {
 
   constructor(
     private httpClient: HttpClient,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private translateService: TranslateService
   ) {}
 
   getAvailableMovies(page: number, limit: number, name?:string) : Observable<HttpResponse<PaginatedList<Movie>>> {
@@ -31,7 +33,7 @@ export class MoviesService {
           }
         )
       ),
-      catchError(this.handleUnexpected)
+      catchError(error => this.handleUnexpected(error))
     )
   }
 
@@ -42,7 +44,7 @@ export class MoviesService {
           {
             headers: new HttpHeaders({'Authorization': `Bearer ${token}`})
           }
-        ).pipe(catchError(this.handleNotFound))
+        ).pipe(catchError(error => this.handleNotFound(error)))
       )
     )
   }
@@ -52,7 +54,7 @@ export class MoviesService {
       flatMap(token =>
         this.httpClient.post<IdObject>('/api/movies', movieForm,
           { headers: new HttpHeaders({'Authorization': `Bearer ${token}`})}
-        ).pipe(catchError(this.handleUnexpected))
+        ).pipe(catchError(error => this.handleUnexpected(error)))
       )
     )
   }
@@ -62,29 +64,35 @@ export class MoviesService {
       flatMap(token =>
         this.httpClient.put<Movie>(`/api/movies/${id}`, movieForm,
           { headers: new HttpHeaders({'Authorization': `Bearer ${token}`})}
-        ).pipe(catchError(this.handleNotFound))
+        ).pipe(catchError(error => this.handleNotFound(error)))
       )
     )
   }
 
   private handleNotFound(error: HttpErrorResponse) {
     if (error.status === 404)
-      return throwError('Requested movie not found')
+      return this.translateService.get('errors.movie_not_found').pipe(
+        flatMap(message => throwError(message))
+      )
     
     if (error.error instanceof ErrorEvent)
-      console.error('An error occurred:', error.error.message);
+      console.error('An error occurred:', error.error.message)
     else
-      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+      console.error(`Backend returned code ${error.status}, body was: ${error.error}`)
 
-    return throwError('Unexpected error in the app. Please try again later')
+    return this.translateService.get('errors.unexpected_error').pipe(
+      flatMap(message => throwError(message))
+    )
   }
 
   private handleUnexpected(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent)
-      console.error('An error occurred:', error.error.message);
+      console.error('An error occurred:', error.error.message)
     else
-      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
+      console.error(`Backend returned code ${error.status}, body was: ${error.error}`)
 
-    return throwError('Unexpected error in the app. Please try again later')
+    return this.translateService.get('errors.unexpected_error').pipe(
+      flatMap(message => throwError(message))
+    )
   }
 }

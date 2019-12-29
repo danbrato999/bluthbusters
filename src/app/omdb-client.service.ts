@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { MovieData } from './models';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, flatMap } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class OmdbClientService {
 
   constructor(
     private httpClient: HttpClient,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private translateService: TranslateService
   ) {}
 
   searchMovieByTitle(title: string) : Observable<MovieData> {
@@ -25,24 +27,24 @@ export class OmdbClientService {
       flatMap(token =>
         this.httpClient.post<MovieData>('/api/external/omdb/search', body,
           { headers: new HttpHeaders({'Authorization': `Bearer ${token}`}) })
-        .pipe(catchError(this.handleNotFound))
+        .pipe(catchError(error => this.handleNotFound(error)))
       )
     )
   }
 
   private handleNotFound(error: HttpErrorResponse) {
-    var message = ''
-
     if (error.status === 404)
-      message = 'The requested movie was not found in the external database'
-    else {
-      message = 'Unexpected error in the app. Please try again later'
-      if (error.error instanceof ErrorEvent)
-        console.error('An error occurred:', error.error.message)
-      else
-        console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`)
-    }
+      return this.translateService.get('errors.external_movie_not_found').pipe(
+        flatMap(message => throwError(message))
+      )
+ 
+    if (error.error instanceof ErrorEvent)
+      console.error('An error occurred:', error.error.message)
+    else
+      console.error(`Backend returned code ${error.status}, body was: ${error.error}`)
 
-    return throwError(message)
+    return this.translateService.get('errors.unexpected_error').pipe(
+      flatMap(message => throwError(message))
+    )
   }
 }

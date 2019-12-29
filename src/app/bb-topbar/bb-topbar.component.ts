@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { MovieRentalsService } from '../movie-rentals.service';
+import { BbTranslatorService } from '../bb-translator.service';
 
 @Component({
   selector: 'app-bb-topbar',
@@ -10,13 +11,16 @@ import { MovieRentalsService } from '../movie-rentals.service';
 })
 export class BbTopbarComponent implements OnInit {
   pendingRentalsCount: number | null
+  private languageConf: Object
 
   constructor(
     public afAuth: AngularFireAuth,
     private router: Router,
-    private rentalsService: MovieRentalsService
+    private rentalsService: MovieRentalsService,
+    private bbTranslator: BbTranslatorService
   ) { 
     this.pendingRentalsCount = null
+    this.languageConf = { 'English': 'en',  'Español': 'es' }
   }
 
   ngOnInit() {
@@ -26,6 +30,18 @@ export class BbTopbarComponent implements OnInit {
 
   logoutUser() {
     this.afAuth.auth.signOut().then(() => this.router.navigate(['/login']))
+  }
+
+  selectLanguage(lang: string) {
+    this.bbTranslator.selectLanguage(this.languageConf[lang])
+  }
+
+  isSelected(lang: string) {
+    return this.languageConf[lang] === this.bbTranslator.currentLanguage
+  }
+
+  get languages() : Array<string> {
+    return Object.keys(this.languageConf)
   }
 
   private fetchPendingMoviesCount() {
