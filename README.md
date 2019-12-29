@@ -1,27 +1,53 @@
 # Bluthbusters
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.20.
+This project was developed in order to get familiar with developing frontend applications with Angular.
+The idea was to implement a fake movie renting service with the following capabilities:
 
-## Development server
+* User login/registration and appropriate page protection to make the page accessible if the user is properly logged in
+* An overview of available films
+* Adding/updating movies to the database
+* A detailed view of a movie
+* An overview of all rented films
+* Renting and returning a film
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli), makes use of [Material](https://material.angular.io)
+for most of the visual components, [flex layout](https://github.com/angular/flex-layout) to make the app responsive,
+[AngularFire](https://github.com/angular/angularfire) and [ngx-auth-firebaseui](https://ngx-auth-firebaseui.firebaseapp.com/home)
+for authentication. The required API to run the server can be found [here](https://github.com/danbrato999/bluthbusters-api)
 
-## Code scaffolding
+## Running locally
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+In order to run the project, you need to have the API running locally in your computer or in the cloud(check the API's repository documentation for help).
+Once you have the API running, you need to create an environment.ts file under *src/environments/* with your Firebase project's credentials:
 
-## Build
+```
+# Example environment.ts file
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+export const environment = {
+  production: false,
+  firebase : {
+    apiKey: "somekey",
+    authDomain: "something.firebaseapp.com",
+    databaseURL: "https://something.firebaseio.com",
+    projectId: "projectId",
+    storageBucket: "something.appspot.com",
+    messagingSenderId: "messagingSenderId",
+    appId: "firebaseAppId"
+  }
+};
+```
 
-## Running unit tests
+Make sure your proyect has the following Sign-in providers under "Authentication/Sign-in method"
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+* Email/Password
+* Google
 
-## Running end-to-end tests
+Finally, make sure to proxy the API requests to the right server. If you use the docker-compose method provided in the API's documentation,
+you won't have to change anything, but if you want to run your API server in a port different than 10003, you need to modify the file
+*src/proxy.conf.json* to point to the right server. Afterwards, simply run
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```
+ng serve
+```
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Developed by Daniel Bravo
